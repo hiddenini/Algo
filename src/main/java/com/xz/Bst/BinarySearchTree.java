@@ -108,6 +108,13 @@ public class BinarySearchTree<E>  implements BinaryTreeInfo {
             this.element = element;
             this.parent = parent;
         }
+        public boolean isLeaf(){
+            return left==null&&right==null;
+        }
+
+        public boolean hasTwoChildren(){
+            return left!=null&&right!=null;
+        }
     }
 
     @Override
@@ -227,6 +234,117 @@ public class BinarySearchTree<E>  implements BinaryTreeInfo {
             }
         }
 
+    }
+
+    public int height(){
+        //return  heightRecursion(root);
+        return heightNotRecursion();
+    }
+
+    /**
+     * 获取节点的高度(递归形式)
+     */
+    private int heightRecursion(Node<E> node){
+        if (node==null) return 0;
+        return 1+Math.max(heightRecursion(node.left),heightRecursion(node.right));
+    }
+
+    /**
+     * 获取节点的高度(非递归形式),利用层序遍历
+     */
+    private int heightNotRecursion(){
+        if(root==null ) return 0;
+        int height=0;
+        //每一层的高度,默认为1(第一层只有根节点)
+        int levelSize=1;
+        Queue<Node<E>> queue=new LinkedList<>();
+        //根节点入队
+        queue.offer(root);
+        while (! queue.isEmpty()){
+            //头结点出队
+            Node<E> node=queue.poll();
+            levelSize--;
+            //System.out.println(node.element);
+            if(node.left!=null){
+                queue.offer(node.left);
+            }
+            if(node.right!=null){
+                queue.offer(node.right);
+            }
+            //每一层访问完之后下一层的节点数量等于队列的size
+            if(levelSize==0){
+                levelSize=queue.size();
+                height++;
+            }
+        }
+        return height;
+    }
+
+        /**
+         * 判断是否是完全二叉树(利用层序遍历)
+         *  这里有一个bug 比如下面这种就会认为是完全二叉树原因是
+         *  if(node.left!=null&&node.right!=null) 这里是一起判断的。比图节点4 是有左节点的，但是没有右节点，不会入队
+         *     ┌──7──┐
+         *     │     │
+         *   ┌─4     9
+         *   │
+         * ┌─2
+         * │
+         * 1
+         */
+    public boolean isCompleteOld(){
+        if(root==null) return false;
+        Queue<Node<E>> queue=new LinkedList<>();
+        //根节点入队
+        queue.offer(root);
+        boolean leaf=false;
+        while (! queue.isEmpty()){
+            //头结点出队
+            Node<E> node=queue.poll();
+            if(leaf&& !node.isLeaf()){
+                return false;
+            }
+            if(node.left!=null&&node.right!=null){
+                queue.offer(node.left);
+                queue.offer(node.right);
+            }else if(node.left==null&&node.right!=null){
+                return false;
+            }else{
+                //剩下还有2种情况,左右都为空,或者左为空，右不为空,这2种情况都需要保证后续的所有节点都是叶子节点
+                leaf=true;
+
+            }
+        }
+        return true;
+    }
+
+    public boolean isComplete(){
+        if(root==null) return false;
+        Queue<Node<E>> queue=new LinkedList<>();
+        //根节点入队
+        queue.offer(root);
+        boolean leaf=false;
+        while (! queue.isEmpty()){
+            //头结点出队
+            Node<E> node=queue.poll();
+            if(leaf&& !node.isLeaf()){
+                return false;
+            }
+            if(node.left!=null){
+                queue.offer(node.left);
+            }else if(node.right==null){
+                //即node.left==null && node.right==null
+                return  false;
+            }
+            if(node.right!=null) {
+                queue.offer(node.right);
+            }else{
+                //即node.right==null 此时不管是左节点为空还是不为空，都代表后续的所有节点都应该是叶子节点
+                leaf=true;
+            }
+
+        }
+        return true;
     }
 }
 
