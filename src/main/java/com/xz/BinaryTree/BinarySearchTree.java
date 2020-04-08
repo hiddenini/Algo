@@ -3,7 +3,7 @@ package com.xz.BinaryTree;
 import java.util.Comparator;
 
 /**
- * 二叉搜索树
+ * 二叉搜索树 ,实现特定的add remove逻辑
  * @param <E>
  */
 @SuppressWarnings("unchecked")

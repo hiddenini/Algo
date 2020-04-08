@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- * 二二叉树类
+ * 二叉树基类,提供二叉树的公共方法
  */
 public class BinaryTree<E> implements BinaryTreeInfo {
     protected int size;
@@ -95,7 +95,7 @@ public class BinaryTree<E> implements BinaryTreeInfo {
      * 层序遍历
      *      1--将根节点入队
      *      2--循环执行以下操作
-     *          --将对头节点A出队并访问
+     *          --将队头节点A出队并访问
      *          --将A的左节点入队
      *          --将A的右节点入队
      *
