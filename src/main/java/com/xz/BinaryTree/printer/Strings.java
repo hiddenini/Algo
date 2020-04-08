@@ -1,4 +1,4 @@
-package com.xz.Bst.printer;
+package com.xz.BinaryTree.printer;
 
 public class Strings {
 	public static String repeat(String string, int count) {

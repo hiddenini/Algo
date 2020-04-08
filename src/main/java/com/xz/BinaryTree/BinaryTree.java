@@ -1,173 +1,27 @@
-package com.xz.Bst;
+package com.xz.BinaryTree;
 
-import com.xz.Bst.printer.BinaryTreeInfo;
+/**
+ * @author xz
+ * @date 2020/4/8 9:44
+ **/
 
-import java.util.Comparator;
+
+import com.xz.BinaryTree.printer.BinaryTreeInfo;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- * 二叉搜索树
- * @param <E>
+ * 二二叉树类
  */
-@SuppressWarnings("unchecked")
-public class BinarySearchTree<E>  implements BinaryTreeInfo {
-    private int size;
-    private Node<E> root;
-    private Comparator<E> comparator;
+public class BinaryTree<E> implements BinaryTreeInfo {
+    protected int size;
+    protected Node<E> root;
 
-    public BinarySearchTree() {
-        this(null);
-    }
-
-    public BinarySearchTree(Comparator<E> comparator) {
-        this.comparator = comparator;
-    }
-
-    public int size() {
-        return size;
-    }
-
-    public boolean isEmpty() {
-        return size == 0;
-    }
-
-    public void clear() {
-        root=null;
-        size=0;
-    }
-
-    public void add(E element) {
-        elementNotNullCheck(element);
-
-        // 添加第一个节点
-        if (root == null) {
-            root = new Node<>(element, null);
-            size++;
-            return;
-        }
-
-        // 添加的不是第一个节点
-        // 找到父节点
-        Node<E> parent = root;
-        Node<E> node = root;
-        int cmp = 0;
-        while (node != null) {
-            cmp = compare(element, node.element);
-            parent = node;
-            if (cmp > 0) {
-                node = node.right;
-            } else if (cmp < 0) {
-                node = node.left;
-            } else { // 相等,如果是基础数据类型可以什么都不做,如果是自定义数据(Person)是否需要覆盖，看你自己吧
-                node.element=element;
-                return;
-            }
-        }
-
-        // 看看插入到父节点的哪个位置
-        Node<E> newNode = new Node<>(element, parent);
-        if (cmp > 0) {
-            parent.right = newNode;
-        } else {
-            parent.left = newNode;
-        }
-        size++;
-    }
-
-    public void remove(E element) {
-        remove(node(element));
-    }
-
-    public void remove(Node<E> node) {
-        if (node==null) return;;
-        size--;
-        //度为2的节点
-        if (node.hasTwoChildren()){
-            //找到后继节点
-            Node<E> s=successor(node);
-            //用后继节点的值覆盖度为2的节点的值
-            node.element=s.element;
-            //删除后继节点
-            node=s;
-        }
-        //删除node节点(node的度必然是1或者0)
-        Node<E> replace=node.left!=null?node.left:node.right;
-
-        if (replace!=null) {
-            //node为度为1的节点
-            //更改parent
-            replace.parent=node.parent;
-            //更改parent的left or right的指向
-            if (node.parent==null){
-                //node是度为1的节点并且是根节点
-                root=replace;
-            }else if(node==node.parent.left){
-                node.parent.left=replace;
-            }else if(node==node.parent.right){
-                node.parent.right=replace;
-            }
-
-        }else if(node.parent==null){
-            //node为度为0的节点,且为根节点
-            root=null;
-        }else{
-            //node为度为0的节点,但不是根节点
-            if (node==node.parent.left){
-                node.parent.left=null;
-            }else{
-                //即node==node.parent.left
-                node.parent.right=null;
-            }
-        }
-    }
-
-    /**
-     * 根据元素找到对应的节点
-     * @param element
-     * @return
-     */
-    private Node<E> node(E element){
-        Node<E> node=root;
-        while (node!=null){
-            int cmp=compare(element,node.element);
-            if (cmp==0) return node;
-            //如果该element比当前节点的element要大，则往右边找
-            if (cmp>0){
-                node=node.right;
-            }else{
-                //cmp<0
-                node=node.left;
-            }
-        }
-        return null;
-    }
-
-    public boolean contains(E element) {
-        return node(element)!=null;
-    }
-
-    /**
-     * @return 返回值等于0，代表e1和e2相等；返回值大于0，代表e1大于e2；返回值小于于0，代表e1小于e2
-     */
-    private int compare(E e1, E e2) {
-        if (comparator != null) {
-            return comparator.compare(e1, e2);
-        }
-        return ((Comparable<E>)e1).compareTo(e2);
-    }
-
-    private void elementNotNullCheck(E element) {
-        if (element == null) {
-            throw new IllegalArgumentException("element must not be null");
-        }
-    }
-
-    private static class Node<E> {
+    protected static class Node<E> {
         E element;
         Node<E> left;
         Node<E> right;
-        @SuppressWarnings("unused")
         Node<E> parent;
         public Node(E element, Node<E> parent) {
             this.element = element;
@@ -182,30 +36,18 @@ public class BinarySearchTree<E>  implements BinaryTreeInfo {
         }
     }
 
-    @Override
-    public Object root() {
-        return root;
+    public int size() {
+        return size;
     }
 
-    @Override
-    public Object left(Object node) {
-        return ((Node<E>)node).left;
+    public boolean isEmpty() {
+        return size == 0;
     }
 
-    @Override
-    public Object right(Object node) {
-        return ((Node<E>)node).right;
+    public void clear() {
+        root=null;
+        size=0;
     }
-
-    @Override
-    public Object string(Object node) {
-        Node<E> treeNode=((Node<E>)node);
-        if (treeNode==root){
-            return ((Node<E>)node).element+"_p(null)";
-        }
-        return ((Node<E>)node).element+"_p("+((Node<E>)node).parent.element+")";
-    }
-
     /**
      * 前序遍历
      */
@@ -349,18 +191,18 @@ public class BinarySearchTree<E>  implements BinaryTreeInfo {
         return height;
     }
 
-        /**
-         * 判断是否是完全二叉树(利用层序遍历)
-         *  这里有一个bug 比如下面这种就会认为是完全二叉树原因是
-         *  if(node.left!=null&&node.right!=null) 这里是一起判断的。比图节点4 是有左节点的，但是没有右节点，不会入队
-         *     ┌──7──┐
-         *     │     │
-         *   ┌─4     9
-         *   │
-         * ┌─2
-         * │
-         * 1
-         */
+    /**
+     * 判断是否是完全二叉树(利用层序遍历)
+     *  这里有一个bug 比如下面这种就会认为是完全二叉树原因是
+     *  if(node.left!=null&&node.right!=null) 这里是一起判断的。比图节点4 是有左节点的，但是没有右节点，不会入队
+     *     ┌──7──┐
+     *     │     │
+     *   ┌─4     9
+     *   │
+     * ┌─2
+     * │
+     * 1
+     */
     public boolean isCompleteOld(){
         if(root==null) return false;
         Queue<Node<E>> queue=new LinkedList<>();
@@ -435,7 +277,7 @@ public class BinarySearchTree<E>  implements BinaryTreeInfo {
         }
 
         while (node.parent!=null && node==node.parent.left){
-                node=node.parent;
+            node=node.parent;
         }
         //node.parent==null or node=node.parent.right;两种情况都是直接返回node.parent
         return node.parent;
@@ -466,5 +308,27 @@ public class BinarySearchTree<E>  implements BinaryTreeInfo {
         return node.parent;
     }
 
-}
+    @Override
+    public Object root() {
+        return root;
+    }
 
+    @Override
+    public Object left(Object node) {
+        return ((Node<E>)node).left;
+    }
+
+    @Override
+    public Object right(Object node) {
+        return ((Node<E>)node).right;
+    }
+
+    @Override
+    public Object string(Object node) {
+        Node<E> treeNode=((Node<E>)node);
+        if (treeNode==root){
+            return ((Node<E>)node).element+"_p(null)";
+        }
+        return ((Node<E>)node).element+"_p("+((Node<E>)node).parent.element+")";
+    }
+}

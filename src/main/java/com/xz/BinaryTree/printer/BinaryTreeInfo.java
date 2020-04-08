@@ -1,4 +1,4 @@
-package com.xz.Bst.printer;
+package com.xz.BinaryTree.printer;
 
 public interface BinaryTreeInfo {
 	/**

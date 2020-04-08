@@ -1,4 +1,4 @@
-package com.xz.Bst.printer;
+package com.xz.BinaryTree.printer;
 
 import java.util.ArrayList;
 import java.util.Collection;

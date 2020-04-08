@@ -1,4 +1,4 @@
-package com.xz.Bst.file;
+package com.xz.BinaryTree.file;
 
 import java.io.BufferedWriter;
 import java.io.File;

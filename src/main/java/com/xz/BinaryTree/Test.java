@@ -1,11 +1,11 @@
-package com.xz.Bst;
+package com.xz.BinaryTree;
 
-import com.xz.Bst.printer.BinaryTrees;
+import com.xz.BinaryTree.printer.BinaryTrees;
 
 public class Test {
     public static void main(String[] args) {
 
-        test2();
+        test3();
 
     }
 
@@ -73,9 +73,24 @@ public class Test {
         //bst.remove(9);
         bst.remove(7);
         BinaryTrees.println(bst);
-
-
     }
 
+    /**
+     * 测试
+     */
+    static void  test3() {
+        Integer data[] = new Integer[]{
+                7, 4, 9, 2, 5, 8, 11, 3, 12,1
+        };
+
+        BinarySearchTree<Integer> bst = new BinarySearchTree<>();
+        for (int i = 0; i < data.length; i++) {
+            bst.add(data[i]);
+        }
+
+        BinaryTrees.println(bst);
+        bst.remove(4);
+        BinaryTrees.println(bst);
+    }
 }
 
