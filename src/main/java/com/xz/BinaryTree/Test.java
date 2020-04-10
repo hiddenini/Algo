@@ -5,7 +5,7 @@ import com.xz.BinaryTree.printer.BinaryTrees;
 public class Test {
     public static void main(String[] args) {
 
-        test3();
+        test4();
 
     }
 
@@ -18,12 +18,12 @@ public class Test {
                7, 4, 9, 2, 1
        };
 
-        BinarySearchTree<Integer> bst = new BinarySearchTree<>();
+        BST<Integer> bst = new BST<>();
         for (int i = 0; i < data.length; i++) {
             bst.add(data[i]);
         }
 
-       BinarySearchTree<Integer> bst1 = new BinarySearchTree<>();
+       BST<Integer> bst1 = new BST<>();
        for (int i = 0; i < data1.length; i++) {
            bst1.add(data1[i]);
        }
@@ -34,7 +34,7 @@ public class Test {
         //bst.inOrderTraversal();
        //bst.postOrderTraversal();
        //bst.levelOrderTraversal();
-       bst.levelOrderTraversal(new BinarySearchTree.Vistor() {
+       bst.levelOrderTraversal(new BST.Vistor() {
            @Override
            public void visit(Object element) {
                System.out.print("_"+element+"_");
@@ -57,7 +57,7 @@ public class Test {
                 7, 4, 9, 2, 5, 8, 11, 3, 12,1
         };
 
-        BinarySearchTree<Integer> bst = new BinarySearchTree<>();
+        BST<Integer> bst = new BST<>();
         for (int i = 0; i < data.length; i++) {
             bst.add(data[i]);
         }
@@ -76,20 +76,36 @@ public class Test {
     }
 
     /**
-     * 测试
+     * 测试调整结构之后的bst
      */
     static void  test3() {
         Integer data[] = new Integer[]{
                 7, 4, 9, 2, 5, 8, 11, 3, 12,1
         };
 
-        BinarySearchTree<Integer> bst = new BinarySearchTree<>();
+        BST<Integer> bst = new BST<>();
         for (int i = 0; i < data.length; i++) {
             bst.add(data[i]);
         }
 
         BinaryTrees.println(bst);
         bst.remove(4);
+        BinaryTrees.println(bst);
+    }
+
+    /**
+     * 测试调整结构之后的bst
+     */
+    static void  test4() {
+        Integer data[] = new Integer[]{
+                1,2,3,4,5,6,7
+        };
+
+        AVLTree<Integer> bst = new AVLTree<>();
+        for (int i = 0; i < data.length; i++) {
+            bst.add(data[i]);
+        }
+
         BinaryTrees.println(bst);
     }
 }

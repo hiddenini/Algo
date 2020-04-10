@@ -34,6 +34,14 @@ public class BinaryTree<E> implements BinaryTreeInfo {
         public boolean hasTwoChildren(){
             return left!=null&&right!=null;
         }
+
+        public boolean isLeftChild() {
+            return parent != null && this == parent.left;
+        }
+
+        public boolean isRightChild() {
+            return parent != null && this == parent.right;
+        }
     }
 
     public int size() {
@@ -47,6 +55,10 @@ public class BinaryTree<E> implements BinaryTreeInfo {
     public void clear() {
         root=null;
         size=0;
+    }
+
+    protected Node<E> createNode(E element, Node<E> parent) {
+        return new Node<>(element, parent);
     }
     /**
      * 前序遍历
