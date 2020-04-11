@@ -5,7 +5,7 @@ import com.xz.BinaryTree.printer.BinaryTrees;
 public class Test {
     public static void main(String[] args) {
 
-        test4();
+        test5();
 
     }
 
@@ -89,24 +89,47 @@ public class Test {
         }
 
         BinaryTrees.println(bst);
-        bst.remove(4);
+        bst.remove(1);
+        //bst.remove(4);
         BinaryTrees.println(bst);
     }
 
     /**
-     * 测试调整结构之后的bst
+     * 测试调AVL树add
      */
     static void  test4() {
         Integer data[] = new Integer[]{
-                1,2,3,4,5,6,7
+                1,2,3,4,5,6,7,8,9
         };
 
-        AVLTree<Integer> bst = new AVLTree<>();
+        AVLTree<Integer> avl = new AVLTree<>();
         for (int i = 0; i < data.length; i++) {
-            bst.add(data[i]);
+            avl.add(data[i]);
         }
 
-        BinaryTrees.println(bst);
+        BinaryTrees.println(avl);
+    }
+
+    /**
+     * 测试调AVL树remove
+     */
+    static void  test5() {
+        Integer data[] = new Integer[]{
+                85,19,69,3,7,99,95
+        };
+
+        AVLTree<Integer> avl = new AVLTree<>();
+        for (int i = 0; i < data.length; i++) {
+            avl.add(data[i]);
+            System.out.println("["+data[i]+"]");
+            System.out.println("==========================");
+            BinaryTrees.println(avl);
+        }
+        BinaryTrees.println(avl);
+        avl.remove(99);
+        avl.remove(85);
+        avl.remove(95);
+        BinaryTrees.println(avl);
     }
 }
 

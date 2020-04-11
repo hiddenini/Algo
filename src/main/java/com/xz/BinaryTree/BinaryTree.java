@@ -42,6 +42,15 @@ public class BinaryTree<E> implements BinaryTreeInfo {
         public boolean isRightChild() {
             return parent != null && this == parent.right;
         }
+
+        @Override
+        public String toString() {
+            String parentString = "null";
+            if (parent != null) {
+                parentString = parent.element.toString();
+            }
+            return element + "_p(" + parentString + ")";
+        }
     }
 
     public int size() {
@@ -337,10 +346,6 @@ public class BinaryTree<E> implements BinaryTreeInfo {
 
     @Override
     public Object string(Object node) {
-        Node<E> treeNode=((Node<E>)node);
-        if (treeNode==root){
-            return ((Node<E>)node).element+"_p(null)";
-        }
-        return ((Node<E>)node).element+"_p("+((Node<E>)node).parent.element+")";
+        return node;
     }
 }
