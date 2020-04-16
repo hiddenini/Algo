@@ -5,7 +5,7 @@ import com.xz.BinaryTree.printer.BinaryTrees;
 public class Test {
     public static void main(String[] args) {
 
-        test5();
+        test6();
 
     }
 
@@ -130,6 +130,24 @@ public class Test {
         avl.remove(85);
         avl.remove(95);
         BinaryTrees.println(avl);
+    }
+
+    /**
+     * 测试RBTree
+     */
+    static void  test6() {
+        Integer data[] = new Integer[]{
+                55,87,56,74,96,22,62,20,70,68,90,50
+        };
+
+        RBTree<Integer> rbTree = new RBTree<>();
+        for (int i = 0; i < data.length; i++) {
+            rbTree.add(data[i]);
+            System.out.println("["+data[i]+"]");
+            System.out.println("==========================");
+            BinaryTrees.println(rbTree);
+        }
+        BinaryTrees.println(rbTree);
     }
 }
 
