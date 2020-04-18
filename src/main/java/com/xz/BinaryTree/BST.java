@@ -106,12 +106,12 @@ public class BST<E>  extends BinaryTree<E> {
                 node.parent.right=replace;
             }
             //删除节点之后的处理,node被删除时node的parent指针还是存在的
-            afterRemove(node);
+            afterRemove(node,replace);
         }else if(node.parent==null){
             //node为度为0的节点,且为根节点
             root=null;
             //删除节点之后的处理
-            afterRemove(node);
+            afterRemove(node,null);
         }else{
             //node为度为0的节点,但不是根节点
             if (node==node.parent.left){
@@ -120,7 +120,7 @@ public class BST<E>  extends BinaryTree<E> {
                 node.parent.right=null;
             }
             //删除节点之后的处理
-            afterRemove(node);
+            afterRemove(node,null);
         }
     }
 
@@ -175,6 +175,6 @@ public class BST<E>  extends BinaryTree<E> {
      * 删除node之后的调整(子类去实现(avl树或者红黑树),二叉搜索树不需要调整)
      * @param node 新添加的节点
      */
-    protected void afterRemove(Node<E> node) { }
+    protected void afterRemove(Node<E> node,Node<E> replace) { }
 }
 

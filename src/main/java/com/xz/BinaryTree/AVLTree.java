@@ -35,7 +35,7 @@ public class AVLTree<E> extends BBST<E> {
      * @param node 新添加的节点
      */
     @Override
-    protected void afterRemove(Node<E> node) {
+    protected void afterRemove(Node<E> node,Node<E> replace) {
         while ((node = node.parent) != null) {
             if (isBalanced(node)) {
                 // 更新高度
