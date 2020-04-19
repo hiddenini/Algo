@@ -5,7 +5,7 @@ import com.xz.BinaryTree.printer.BinaryTrees;
 public class Test {
     public static void main(String[] args) {
 
-        test7();
+        test1();
 
     }
 
@@ -34,10 +34,11 @@ public class Test {
         //bst.inOrderTraversal();
        //bst.postOrderTraversal();
        //bst.levelOrderTraversal();
-       bst.levelOrderTraversal(new BST.Vistor() {
+       bst.levelOrderTraversal(new BinaryTree.Visitor() {
            @Override
-           public void visit(Object element) {
+           public boolean visit(Object element) {
                System.out.print("_"+element+"_");
+               return false;
            }
        });
 

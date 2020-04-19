@@ -5,7 +5,7 @@ import com.xz.MyLinkedList.circle.MyCircleLinkedListJosephus;
 import com.xz.MyLinkedList.circle.MySingleCircleLinkedListJosephus;
 import com.xz.MyQueue.MyQueue;
 import com.xz.Stack.MyStack;
-import com.xz.utils.Asserts;
+import com.xz.Utils.Asserts;
 
 /**
  * @author xz

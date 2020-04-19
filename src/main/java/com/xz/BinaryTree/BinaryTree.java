@@ -105,29 +105,33 @@ public class BinaryTree<E> implements BinaryTreeInfo {
     /**
      * 中序遍历
      */
-    public void inOrderTraversal() {
-        inOrderTraversal(root);
+    public void inOrderTraversal(Visitor<E> visitor) {
+        if (visitor == null) return;
+        inOrderTraversal(root,visitor);
     }
 
-    public void inOrderTraversal(Node<E> node) {
-        if (node == null) return;
-        inOrderTraversal(node.left);
-        System.out.println(node.element);
-        inOrderTraversal(node.right);
+    public void inOrderTraversal(Node<E> node,Visitor<E> visitor) {
+        if (node == null || visitor.stop) return;
+        inOrderTraversal(node.left,visitor);
+        if (visitor.stop) return;
+        visitor.stop = visitor.visit(node.element);
+        inOrderTraversal(node.right,visitor);
     }
 
     /**
      * 后序遍历
      */
-    public void postOrderTraversal() {
-        postOrderTraversal(root);
+    public void postOrderTraversal(Visitor<E> visitor) {
+        if (visitor == null) return;
+        postOrderTraversal(root,visitor);
     }
 
-    public void postOrderTraversal(Node<E> node) {
-        if (node == null) return;
-        postOrderTraversal(node.left);
-        postOrderTraversal(node.right);
-        System.out.println(node.element);
+    public void postOrderTraversal(Node<E> node,Visitor<E> visitor) {
+        if (node == null || visitor.stop) return;
+        postOrderTraversal(node.left,visitor);
+        postOrderTraversal(node.right,visitor);
+        if (visitor.stop) return;
+        visitor.stop = visitor.visit(node.element);
     }
 
 
@@ -158,24 +162,25 @@ public class BinaryTree<E> implements BinaryTreeInfo {
 
     }
 
-    public static interface Vistor<E> {
-        void visit(E element);
+    public static  abstract class Visitor<E> {
+        boolean stop;
+        public abstract boolean visit(E element);
     }
 
     /**
      * 带有访问接口的层序遍历
      *
-     * @param vistor
+     * @param visitor
      */
-    public void levelOrderTraversal(Vistor vistor) {
-        if (root == null && vistor == null) return;
+    public void levelOrderTraversal(Visitor visitor) {
+        if (root == null && visitor == null) return;
         Queue<Node<E>> queue = new LinkedList<>();
         //根节点入队
         queue.offer(root);
         while (!queue.isEmpty()) {
             //头结点出队
             Node<E> node = queue.poll();
-            vistor.visit(node.element);
+            visitor.visit(node.element);
             //System.out.println(node.element);
             if (node.left != null) {
                 queue.offer(node.left);

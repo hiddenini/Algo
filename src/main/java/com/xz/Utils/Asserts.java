@@ -1,4 +1,4 @@
-package com.xz.utils;
+package com.xz.Utils;
 
 /**
  * @author xz
