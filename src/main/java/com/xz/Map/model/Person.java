@@ -1,4 +1,4 @@
-package com.xz.Map;
+package com.xz.Map.model;
 
 public class Person {
     private int age;   // 10  20

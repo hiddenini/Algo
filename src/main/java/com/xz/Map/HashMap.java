@@ -1,5 +1,8 @@
 package com.xz.Map;
 
+import com.xz.BinaryTree.printer.BinaryTreeInfo;
+import com.xz.BinaryTree.printer.BinaryTrees;
+
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Queue;
@@ -101,16 +104,16 @@ public class HashMap<K, V> implements Map<K, V> {
     public boolean containsValue(V value) {
         if (size == 0) return false;
         for (int i = 0; i < table.length; i++) {
-            if (table[i]==null) continue;
-            Queue<Node<K,V>> queue=new LinkedList<>();
+            if (table[i] == null) continue;
+            Queue<Node<K, V>> queue = new LinkedList<>();
             queue.offer(table[i]);
-            while (!queue.isEmpty()){
+            while (!queue.isEmpty()) {
                 Node<K, V> node = queue.poll();
-                if (Objects.equals(value,node.value)) return true;
-                if (node.left!=null){
+                if (Objects.equals(value, node.value)) return true;
+                if (node.left != null) {
                     queue.offer(node.left);
                 }
-                if (node.left!=null){
+                if (node.left != null) {
                     queue.offer(node.left);
                 }
             }
@@ -120,22 +123,55 @@ public class HashMap<K, V> implements Map<K, V> {
 
     @Override
     public void traversal(Visitor<K, V> visitor) {
-        if (size == 0 || visitor==null) return ;
+        if (size == 0 || visitor == null) return;
         for (int i = 0; i < table.length; i++) {
-            if (table[i]==null) continue;
-            Queue<Node<K,V>> queue=new LinkedList<>();
+            if (table[i] == null) continue;
+            Queue<Node<K, V>> queue = new LinkedList<>();
             queue.offer(table[i]);
-            while (!queue.isEmpty()){
+            while (!queue.isEmpty()) {
                 Node<K, V> node = queue.poll();
-               if (visitor.visit(node.key,node.value)) return;
+                if (visitor.visit(node.key, node.value)) return;
 
-                if (node.left!=null){
+                if (node.left != null) {
                     queue.offer(node.left);
                 }
-                if (node.right!=null){
+                if (node.right != null) {
                     queue.offer(node.right);
                 }
             }
+        }
+    }
+
+    /**
+     * 打印出每一颗红黑树
+     */
+    public void print() {
+        if (size == 0) return;
+        for (int i = 0; i < table.length; i++) {
+            final Node<K, V> root = table[i];
+            System.out.println("【index = " + i + "】");
+            BinaryTrees.println(new BinaryTreeInfo() {
+                @Override
+                public Object string(Object node) {
+                    return node;
+                }
+
+                @Override
+                public Object root() {
+                    return root;
+                }
+
+                @Override
+                public Object right(Object node) {
+                    return ((Node<K, V>) node).right;
+                }
+
+                @Override
+                public Object left(Object node) {
+                    return ((Node<K, V>) node).left;
+                }
+            });
+            System.out.println("---------------------------------------------------");
         }
     }
 
@@ -334,7 +370,7 @@ public class HashMap<K, V> implements Map<K, V> {
                 node = node.right;
             } else if (cmp < 0) {
                 node = node.left;
-            } else { // 相等,如果是基础数据类型可以什么都不做,如果是自定义数据(Person)是否需要覆盖，看你自己吧
+            } else { // 相等
                 node = node.right;
             }
         }
@@ -366,18 +402,27 @@ public class HashMap<K, V> implements Map<K, V> {
      * @return
      */
     private int compare(K k1, K k2, int h1, int h2) {
+        /**
+         * 首先直接拿hashCode比较，但是hashCode相同不一定是同一个key,只有equals相等的才是相同的key
+         */
         int result = h1 - h2;
-        if (result == 0) return result;
-        //equals
+        if (result != 0) return result;
+        /**
+         * 来到这里，说明hashCode相同,则比较equals
+         */
         if (Objects.equals(k1, k2)) return 0;
-        //哈希值相等,但是不是equals
+        /**
+         * 来到这里说明哈希值相等,但是并不equals
+         */
         //比较类名
         if (k1 != null && k2 != null) {
             String name1 = k1.getClass().getName();
             String name2 = k2.getClass().getName();
             result = name1.compareTo(name2);
             if (result != 0) return result;
-            //同一种类型
+            /**
+             *来到这里说明是同一种类型
+             */
             if (k1 instanceof Comparable) {
                 return ((Comparable) k1).compareTo(k2);
             }
@@ -387,6 +432,14 @@ public class HashMap<K, V> implements Map<K, V> {
          *  或者或k1和k2有一个为空
          *
          *  使用对象的内存地址来比较
+         */
+        /**
+         * 如果下面直接 return System.identityHashCode(k1) - System.identityHashCode(k2);
+         *
+         * 那么会导致test4()
+         *           这个地方会返回null,不稳定，因为compare最后一定走到比较内存地址，但是下面的new Key(1) 和上面循环中的new Key(i)是不同非
+         *
+         *          对象，所以内存地址是随机的,不稳定.
          */
         return System.identityHashCode(k1) - System.identityHashCode(k2);
     }
@@ -445,6 +498,10 @@ public class HashMap<K, V> implements Map<K, V> {
             return null;
         }
 
+        @Override
+        public String toString() {
+            return "Node_" + key + "_" + value;
+        }
     }
 
     /**

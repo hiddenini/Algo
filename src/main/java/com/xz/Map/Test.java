@@ -1,11 +1,13 @@
 package com.xz.Map;
 
+import com.xz.Map.model.Key;
+import com.xz.Map.model.Person;
 import com.xz.Set.file.FileInfo;
 import com.xz.Set.file.Files;
 
 public class Test {
     public static void main(String[] args) {
-        test3();
+        test4(new HashMap<>());
     }
 
     static void test1() {
@@ -65,11 +67,25 @@ public class Test {
                 return false;
             }
         });
-
 /*        System.out.println(map.remove("jack"));
         System.out.println(map.get("jack"));
 
         System.out.println("size:"+map.size());*/
 
     }
+
+    public static void test4(HashMap<Object, Integer> map) {
+        for (int i = 1; i <=19 ; i++) {
+            map.put(new Key(i), i);
+        }
+        System.out.println("size:"+map.size());
+        /**
+         * 这个地方会返回null不稳定，因为compare最后一定走到比较内存地址，但是下面的new Key(1) 和上面循环中的new Key(i)是不同非
+         *
+         * 对象，所以内存地址是随机的,不稳定.
+         */
+        System.out.println(map.get(new Key(1)));
+        map.print();
+    }
+
 }
