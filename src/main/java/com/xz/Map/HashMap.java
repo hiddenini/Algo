@@ -3,6 +3,7 @@ package com.xz.Map;
 import com.xz.BinaryTree.printer.BinaryTreeInfo;
 import com.xz.BinaryTree.printer.BinaryTrees;
 
+import javax.swing.*;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Queue;
@@ -55,15 +56,49 @@ public class HashMap<K, V> implements Map<K, V> {
         Node<K, V> parent = root;
         Node<K, V> node = root;
         int cmp = 0;
-        int h1 = key == null ? 0 : key.hashCode();
+        K k1=key;
+        int h1 = k1 == null ? 0 : k1.hashCode();
+        Node<K, V> result=null;
+        Boolean search=false;
         while (node != null) {
-            cmp = compare(key, node.key, h1, node.hash);
             parent = node;
+            K k2=node.key;
+            int h2=node.hash;
+            if (h1>h2){
+                cmp=1;
+            }else if (h1<h2){
+                cmp=-1;
+            }else if (Objects.equals(k1,k2)){
+                cmp=0;
+            }
+            else if (k1!=null && k2!=null
+                        && k1.getClass()==k2.getClass()
+                        && k1 instanceof Comparable
+                       && (cmp = ((Comparable) k1).compareTo(k2))!=0){
+                //因为compareTo=0只说明大小相等,
+                // cmp = ((Comparable) k1).compareTo(k2);
+            }else if (search){
+                cmp=System.identityHashCode(k1) - System.identityHashCode(k2);
+            }else {
+                //hashCode相等,但是不equals 且不具备可比较性,如果直接根据内存地址判断往哪边走会导致出现2个相同的key
+                //先扫描，再根据内存地址判断,如果扫描发现了相同的key则覆盖,否则根据内存地址判断往左还是往右
+                if (node.left!=null && (result=node(node.left,k1))!=null
+                       || node.right!=null && (result=node(node.right,k1))!=null ){
+                        node=result;
+                        cmp=0;
+                }else {
+                    //能来到这里说明当前红黑树种没有任何一个节点的key和当前添加的节点的key相等
+                    // 进入下一次循环的时候不需要再执行上面那一步了search作为标志位
+                    search=true;
+                    cmp=System.identityHashCode(k1) - System.identityHashCode(k2);
+                }
+            }
+
             if (cmp > 0) {
                 node = node.right;
             } else if (cmp < 0) {
                 node = node.left;
-            } else { // 相等,如果是基础数据类型可以什么都不做,如果是自定义数据(Person)是否需要覆盖，看你自己吧
+            } else { // 相等
                 node.key = key;
                 V oldValue = node.value;
                 node.value = value;
@@ -361,18 +396,45 @@ public class HashMap<K, V> implements Map<K, V> {
      * @return
      */
     private Node<K, V> node(K key) {
-        Node<K, V> node = table[index(key)];
-        int h1 = key == null ? 0 : key.hashCode();
+        Node<K, V> root = table[index(key)];
+        return root == null ? null : node(root, key);
+    }
+
+
+    private Node<K, V> node(Node<K, V> node, K key1) {
+        int h1 = key1 == null ? 0 : key1.hashCode();
+        Node<K, V> result = null;
+        int cmp=0;
         while (node != null) {
-            int cmp = compare(key, node.key, h1, node.hash);
-            if (cmp == 0) return node;
-            if (cmp > 0) {
+            int h2 = node.hash;
+            K key2 = node.key;
+            //先比较hashCode h1-h2可能溢出,因为hashCode可能是负数
+            if (h1 > h2) {
                 node = node.right;
-            } else if (cmp < 0) {
+            } else if (h1 < h2) {
                 node = node.left;
-            } else { // 相等
-                node = node.right;
-            }
+            } else if (Objects.equals(key1, key2)) {
+                //hashCode相等且equals
+                return node;
+            } else if (key1 != null && key2 != null
+                    && key1.getClass() == key2.getClass()
+                    && key1 instanceof Comparable
+                    && (cmp = ((Comparable) key1).compareTo(key2))!=0) {
+                //hashCode相等且不equals,但是具备可比较性
+                //compareTo=0只说明大小相等，并不代表k相等，所以排除掉，继续走下面的扫描
+                node=cmp>0?node.right:node.left;
+            } else if (node.right != null && (result = node(node.right, key1)) != null) {
+                //hashCode相等，但是不具备可比较性,也不equals 这里不能根据内存大小去比较了，只有扫描,这里是扫描右子树
+                return result;
+            }else{
+                //只能往左边找，减少递归调用
+                node=node.left;
+            } /*else if (node.left != null && (result = node(node.left, key1)) != null) {
+                //这里是扫描左子树
+                return result;
+            } else {
+                return null;
+            }*/
         }
         return null;
     }
@@ -401,6 +463,7 @@ public class HashMap<K, V> implements Map<K, V> {
      * @param h2 k2的hashCode
      * @return
      */
+    @Deprecated
     private int compare(K k1, K k2, int h1, int h2) {
         /**
          * 首先直接拿hashCode比较，但是hashCode相同不一定是同一个key,只有equals相等的才是相同的key

@@ -1,6 +1,6 @@
 package com.xz.Map.model;
 
-public class Person {
+public class Person implements Comparable<Person>{
     private int age;   // 10  20
     private float height; // 1.55 1.67
     private String name; // "jack" "rose"
@@ -36,4 +36,8 @@ public class Person {
         return hashCode;
     }
 
+    @Override
+    public int compareTo(Person o) {
+        return age-o.age;
+    }
 }
