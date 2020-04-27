@@ -106,6 +106,37 @@ public class Test {
         System.out.println(hashMap.get(subKey1));
     }*/
 
+    static void test1() {
+        String filepath = "D:\\software\\sources\\java\\util";
+        FileInfo fileInfo = Files.read(filepath, null);
+        String[] words = fileInfo.words();
+
+        System.out.println("总行数：" + fileInfo.getLines());
+        System.out.println("单词总数：" + words.length);
+        System.out.println("-------------------------------------");
+        Map<String, Integer> map=new HashMap<>();
+        //java.util.HashMap<String, Integer> map=new java.util.HashMap<String, Integer>();
+        Times.test(map.getClass().getName(), new Times.Task() {
+            @Override
+            public void execute() {
+                for (String word : words) {
+                    Integer count = map.get(word);
+                    count = count == null ? 0 : count;
+                    map.put(word, count + 1);
+                }
+                System.out.println(map.size()); // 17188
+
+                int count = 0;
+                for (String word : words) {
+                    Integer i = map.get(word);
+                    count += i == null ? 0 : i;
+                    map.remove(word);
+                }
+                Asserts.test(count == words.length);
+                Asserts.test(map.size() == 0);
+            }
+        });
+    }
 
     static void test2(HashMap<Object, Integer> map) {
         for (int i = 1; i <= 20; i++) {
@@ -178,12 +209,14 @@ public class Test {
     public static void main(String[] args) {
         //test4(new HashMap<>());
         //test5();
+/*
         test2(new HashMap<>());
         test2(new HashMap<>());
         test3(new HashMap<>());
         test4(new HashMap<>());
         test5(new HashMap<>());
-
+*/
+        test1();
     }
 
 }

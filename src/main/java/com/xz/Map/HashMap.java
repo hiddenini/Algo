@@ -222,6 +222,14 @@ public class HashMap<K, V> implements Map<K, V> {
             //用后继节点的值覆盖度为2的节点的值
             node.key = s.key;
             node.value = s.value;
+            /**
+             * hash也需要覆盖,fix bug
+             *
+             * put的时候不覆盖key是因为key是equals的
+             *
+             * 对应的hash也一定相等的,故不需要覆盖
+             */
+            node.hash=s.hash;
             //删除后继节点
             node = s;
         }
