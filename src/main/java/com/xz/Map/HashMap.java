@@ -2,8 +2,6 @@ package com.xz.Map;
 
 import com.xz.BinaryTree.printer.BinaryTreeInfo;
 import com.xz.BinaryTree.printer.BinaryTrees;
-
-import javax.swing.*;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Queue;
@@ -15,6 +13,7 @@ public class HashMap<K, V> implements Map<K, V> {
     private int size;
     private Node<K, V>[] table;
     private static final int DEFAULT_CAPACITY = 1 << 4;
+    private static final float DEFAULT_LOAD_FACTOR = 0.75f;
 
     public HashMap() {
         table = new Node[DEFAULT_CAPACITY];
@@ -41,6 +40,7 @@ public class HashMap<K, V> implements Map<K, V> {
 
     @Override
     public V put(K key, V value) {
+        resize();
         int index = index(key);
         //取出index位置的红黑树的root节点
         Node<K, V> root = table[index];
@@ -57,7 +57,7 @@ public class HashMap<K, V> implements Map<K, V> {
         Node<K, V> node = root;
         int cmp = 0;
         K k1=key;
-        int h1 = k1 == null ? 0 : k1.hashCode();
+        int h1= hash(k1);
         Node<K, V> result=null;
         Boolean search=false;
         while (node != null) {
@@ -117,6 +117,13 @@ public class HashMap<K, V> implements Map<K, V> {
         // 新添加节点之后的处理
         afterPut(newNode);
         return null;
+    }
+
+    private void resize() {
+        if (size/table.length<=DEFAULT_LOAD_FACTOR) return;
+        Node<K,V> [] oldTable=table;
+        table=new Node[table.length<<1];
+
     }
 
     @Override
@@ -410,7 +417,7 @@ public class HashMap<K, V> implements Map<K, V> {
 
 
     private Node<K, V> node(Node<K, V> node, K key1) {
-        int h1 = key1 == null ? 0 : key1.hashCode();
+        int h1 = hash(key1);
         Node<K, V> result = null;
         int cmp=0;
         while (node != null) {
@@ -454,14 +461,22 @@ public class HashMap<K, V> implements Map<K, V> {
      * @return
      */
     private int index(K key) {
+        return hash(key) & (table.length - 1);
+    }
+
+    /**
+     * 进行扰动
+     * @param key
+     * @return
+     */
+    private int hash(K key){
         if (key == null) return 0;
         int hash = key.hashCode();
-        hash = hash ^ (hash >>> 16);
-        return hash & (table.length - 1);
+        return  hash ^ (hash >>> 16);
     }
 
     private int index(Node<K, V> node) {
-        return (node.hash ^ (node.hash >>> 16)) & (table.length - 1);
+        return (node.hash ) & (table.length - 1);
     }
 
     /**
@@ -531,8 +546,9 @@ public class HashMap<K, V> implements Map<K, V> {
         Node<K, V> parent;
 
         public Node(K key, V value, Node<K, V> parent) {
+            int hash= key == null ? 0 : key.hashCode();
             this.key = key;
-            this.hash = key == null ? 0 : key.hashCode();
+            this.hash =hash ^ (hash >>> 16);
             this.value = value;
             this.parent = parent;
         }

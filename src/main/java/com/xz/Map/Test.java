@@ -209,13 +209,11 @@ public class Test {
     public static void main(String[] args) {
         //test4(new HashMap<>());
         //test5();
-/*
         test2(new HashMap<>());
         test2(new HashMap<>());
         test3(new HashMap<>());
         test4(new HashMap<>());
         test5(new HashMap<>());
-*/
         test1();
     }
 
