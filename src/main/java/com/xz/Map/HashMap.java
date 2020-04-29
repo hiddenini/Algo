@@ -166,7 +166,16 @@ public class HashMap<K, V> implements Map<K, V> {
             afterPut(root);
             return;
         }
-        //添加新的节点到红黑树上
+        /**
+         *   添加新的节点到红黑树上,相对于put来说这里有些事不必要的,因为是从一棵红黑树上面移动到一棵新的红黑树
+         *
+         *   所以不可能存在相同的key
+         *
+         *   并且不需要进行search  search的作用是就是扫描左右字数看有没有相同的key
+         *
+         *   并且也不需要进行覆盖
+         */
+
         Node<K, V> parent = root;
         Node<K, V> node = root;
         int cmp = 0;
