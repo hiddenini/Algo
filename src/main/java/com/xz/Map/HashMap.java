@@ -120,10 +120,93 @@ public class HashMap<K, V> implements Map<K, V> {
     }
 
     private void resize() {
-        if (size/table.length<=DEFAULT_LOAD_FACTOR) return;
+        if ((float)size/table.length<=DEFAULT_LOAD_FACTOR) return;
         Node<K,V> [] oldTable=table;
-        table=new Node[table.length<<1];
+        table=new Node[oldTable.length<<1];
+        /**
+         * 遍历每一棵红黑树的每一个节点
+         *
+         * 层序遍历
+         */
+        for (int i = 0; i < oldTable.length; i++) {
+            if (oldTable[i] == null) continue;
+            Queue<Node<K, V>> queue = new LinkedList<>();
+            queue.offer(oldTable[i]);
+            while (!queue.isEmpty()) {
+                Node<K, V> node = queue.poll();
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
+                /**
+                 * 移动节点时会将该节点的左右子节点置为null，故移动节点需要在将该节点的左右节点入队之后
+                 */
+                moveNode(node);
+            }
+        }
+    }
 
+    private void moveNode(Node<K, V> newNode) {
+        /**
+         * 当做新添加的节点
+         */
+        newNode.parent = null;
+        newNode.left=null;
+        newNode.right=null;
+        newNode.color=RED;
+        int index=index(newNode);
+        //取出index位置的红黑树的root节点
+        Node<K, V> root = table[index];
+        if (root == null) {
+            root = newNode;
+            table[index] = root;
+            //修复红黑树性质
+            afterPut(root);
+            return;
+        }
+        //添加新的节点到红黑树上
+        Node<K, V> parent = root;
+        Node<K, V> node = root;
+        int cmp = 0;
+        K k1=newNode.key;
+        int h1= newNode.hash;
+        while (node != null) {
+            parent = node;
+            K k2=node.key;
+            int h2=node.hash;
+            if (h1>h2){
+                cmp=1;
+            }else if (h1<h2){
+                cmp=-1;
+            }else if (Objects.equals(k1,k2)){
+                cmp=0;
+            }
+            else if (k1!=null && k2!=null
+                    && k1.getClass()==k2.getClass()
+                    && k1 instanceof Comparable
+                    && (cmp = ((Comparable) k1).compareTo(k2))!=0){
+
+            }else {
+                    cmp=System.identityHashCode(k1) - System.identityHashCode(k2);
+                }
+            if (cmp > 0) {
+                node = node.right;
+            } else if (cmp < 0) {
+                node = node.left;
+            }
+        }
+
+        // 看看插入到父节点的哪个位置
+        newNode.parent=parent;
+        if (cmp > 0) {
+            parent.right = newNode;
+        } else {
+            parent.left = newNode;
+        }
+        // 新添加节点之后的处理
+        afterPut(newNode);
     }
 
     @Override
@@ -155,8 +238,8 @@ public class HashMap<K, V> implements Map<K, V> {
                 if (node.left != null) {
                     queue.offer(node.left);
                 }
-                if (node.left != null) {
-                    queue.offer(node.left);
+                if (node.right != null) {
+                    queue.offer(node.right);
                 }
             }
         }

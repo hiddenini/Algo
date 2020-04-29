@@ -339,6 +339,8 @@ public class BinaryTree<E> implements BinaryTreeInfo {
         if (node == null) return null;
         /**
          * 如果节点的右子树不为空，则找到右节点，一直往左，直到为空
+         *
+         * 如果节点有右子树，则该节点的后继节点就是往右子树出发，然后转到右子树的左子树，一直到左子树的左子树为空
          */
         Node<E> p = node.right;
         if (p != null) {
@@ -347,7 +349,9 @@ public class BinaryTree<E> implements BinaryTreeInfo {
             }
             return p;
         }
-
+        /**
+         * 如果节点没有右子树，则向上寻找父节点，直到父节点的左子树等于当前节点，则该父节点就是后继节点
+         */
         while (node.parent != null && node == node.parent.right) {
             node = node.parent;
         }

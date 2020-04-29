@@ -1,7 +1,6 @@
 package com.xz.Map;
 
 import com.xz.Map.model.Key;
-import com.xz.Map.model.Person;
 import com.xz.Map.model.SubKey1;
 import com.xz.Map.model.SubKey2;
 import com.xz.Set.file.FileInfo;
@@ -79,11 +78,13 @@ public class Test {
         }
         map.put(new Key(4), 100);
         Asserts.test(map.size() == 19);
-        *//**
-         * 这个地方会返回null不稳定，因为compare最后一定走到比较内存地址，但是下面的new Key(1) 和上面循环中的new Key(i)是不同非
-         *
-         * 对象，所以内存地址是随机的,不稳定.
-         *//*
+        */
+
+    /**
+     * 这个地方会返回null不稳定，因为compare最后一定走到比较内存地址，但是下面的new Key(1) 和上面循环中的new Key(i)是不同非
+     * <p>
+     * 对象，所以内存地址是随机的,不稳定.
+     *//*
         Asserts.test(map.get(new Key(4)) == 100);
         //map.print();
     }
@@ -105,7 +106,6 @@ public class Test {
         System.out.println(hashMap.size());
         System.out.println(hashMap.get(subKey1));
     }*/
-
     static void test1() {
         String filepath = "D:\\software\\sources\\java\\util";
         FileInfo fileInfo = Files.read(filepath, null);
@@ -114,7 +114,7 @@ public class Test {
         System.out.println("总行数：" + fileInfo.getLines());
         System.out.println("单词总数：" + words.length);
         System.out.println("-------------------------------------");
-        Map<String, Integer> map=new HashMap<>();
+        Map<String, Integer> map = new HashMap<>();
         //java.util.HashMap<String, Integer> map=new java.util.HashMap<String, Integer>();
         Times.test(map.getClass().getName(), new Times.Task() {
             @Override
@@ -209,11 +209,16 @@ public class Test {
     public static void main(String[] args) {
         //test4(new HashMap<>());
         //test5();
-        test2(new HashMap<>());
+/*        test2(new HashMap<>());
         test2(new HashMap<>());
         test3(new HashMap<>());
         test4(new HashMap<>());
-        test5(new HashMap<>());
+        test5(new HashMap<>());*/
+        /**
+         *如果没有扩容,则需要0.249
+         *
+         * 如果加上扩容,则需要0.135s
+         */
         test1();
     }
 
