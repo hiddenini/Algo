@@ -116,26 +116,8 @@ public class Test {
         System.out.println("-------------------------------------");
         Map<String, Integer> map = new HashMap<>();
         //java.util.HashMap<String, Integer> map=new java.util.HashMap<String, Integer>();
-        Times.test(map.getClass().getName(), new Times.Task() {
-            @Override
-            public void execute() {
-                for (String word : words) {
-                    Integer count = map.get(word);
-                    count = count == null ? 0 : count;
-                    map.put(word, count + 1);
-                }
-                System.out.println(map.size()); // 17188
-
-                int count = 0;
-                for (String word : words) {
-                    Integer i = map.get(word);
-                    count += i == null ? 0 : i;
-                    map.remove(word);
-                }
-                Asserts.test(count == words.length);
-                Asserts.test(map.size() == 0);
-            }
-        });
+        testMap(new TreeMap<>(),words);
+        testMap(new HashMap<>(),words);
     }
 
     static void test2(HashMap<Object, Integer> map) {
@@ -204,6 +186,29 @@ public class Test {
         Asserts.test(map.get(new SubKey1(1)) == 5);
         Asserts.test(map.get(new SubKey2(1)) == 5);
         Asserts.test(map.size() == 20);
+    }
+
+    static void testMap(Map<Object, Integer> map,String[] words) {
+        Times.test(map.getClass().getName(), new Times.Task() {
+            @Override
+            public void execute() {
+                for (String word : words) {
+                    Integer count = map.get(word);
+                    count = count == null ? 0 : count;
+                    map.put(word, count + 1);
+                }
+                System.out.println(map.size()); // 17188
+
+                int count = 0;
+                for (String word : words) {
+                    Integer i = map.get(word);
+                    count += i == null ? 0 : i;
+                    map.remove(word);
+                }
+                Asserts.test(count == words.length);
+                Asserts.test(map.size() == 0);
+            }
+        });
     }
 
     static void test6() {
