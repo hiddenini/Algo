@@ -206,6 +206,30 @@ public class Test {
         Asserts.test(map.size() == 20);
     }
 
+    static void test6() {
+        Map<Object, Integer> map=new LinkedHashMap<>();
+        map.put("jack", 1);
+        map.put("rose", 2);
+        map.put("jim", 3);
+        map.put("jake", 4);
+        for (int i = 1; i <= 10; i++) {
+            map.put("test" + i, i);
+            map.put(new Key(i), i);
+        }
+        for (int i = 1; i <= 3; i++) {
+            map.put(new Key(i), i + 5);
+        }
+        System.out.println(map.get("jack"));
+        System.out.println(map.size());
+        map.traversal(new Map.Visitor<Object, Integer>() {
+            public boolean visit(Object key, Integer value) {
+                System.out.println(key + "_" + value);
+                return false;
+            }
+        });
+    }
+
+
     public static void main(String[] args) {
         //test4(new HashMap<>());
         //test5();
@@ -219,7 +243,7 @@ public class Test {
          *
          * 如果加上扩容,则需要0.135s
          */
-        test1();
+        test6();
     }
 
 }
