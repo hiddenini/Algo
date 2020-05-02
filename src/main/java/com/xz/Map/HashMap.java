@@ -50,7 +50,7 @@ public class HashMap<K, V> implements Map<K, V> {
             table[index] = root;
             size++;
             //修复红黑树性质
-            afterPut(root);
+            fixAfterPut(root);
             return null;
         }
         //添加新的节点到红黑树上
@@ -116,7 +116,7 @@ public class HashMap<K, V> implements Map<K, V> {
         }
         size++;
         // 新添加节点之后的处理
-        afterPut(newNode);
+        fixAfterPut(newNode);
         return null;
     }
 
@@ -164,7 +164,7 @@ public class HashMap<K, V> implements Map<K, V> {
             root = newNode;
             table[index] = root;
             //修复红黑树性质
-            afterPut(root);
+            fixAfterPut(root);
             return;
         }
         /**
@@ -216,7 +216,7 @@ public class HashMap<K, V> implements Map<K, V> {
             parent.left = newNode;
         }
         // 新添加节点之后的处理
-        afterPut(newNode);
+        fixAfterPut(newNode);
     }
 
     @Override
@@ -310,9 +310,9 @@ public class HashMap<K, V> implements Map<K, V> {
         }
     }
 
-    private V remove(Node<K, V> node) {
+    protected V remove(Node<K, V> node) {
         if (node == null) return null;
-        ;
+        Node<K, V> willNode=node;
         V oldValue = node.value;
         size--;
         //度为2的节点
@@ -350,12 +350,12 @@ public class HashMap<K, V> implements Map<K, V> {
                 node.parent.right = replace;
             }
             //删除节点之后的处理,node被删除时node的parent指针还是存在的
-            afterRemove(node, replace);
+            fixAfterRemove(node, replace);
         } else if (node.parent == null) {
             //node为度为0的节点,且为根节点
             table[index] = null;
             //删除节点之后的处理
-            afterRemove(node, null);
+            fixAfterRemove(node, null);
         } else {
             //node为度为0的节点,但不是根节点
             if (node == node.parent.left) {
@@ -364,13 +364,19 @@ public class HashMap<K, V> implements Map<K, V> {
                 node.parent.right = null;
             }
             //删除节点之后的处理
-            afterRemove(node, null);
+            fixAfterRemove(node, null);
         }
+
+        /**
+         * 来到这里node一定是真是会被删除的节点,由LinkedHashMap实现完成链表的调整
+         */
+        afterRemove(willNode,node);
         return oldValue;
     }
 
 
-    protected void afterRemove(Node<K, V> node, Node<K, V> replace) {
+
+    protected void fixAfterRemove(Node<K, V> node, Node<K, V> replace) {
         //如果被删除的节点是红色
         if (isRed(node)) return;
 
@@ -412,7 +418,7 @@ public class HashMap<K, V> implements Map<K, V> {
                 red(sibling);
                 if (parentIsBlack) {
                     //持续下溢
-                    afterRemove(parent, null);
+                    fixAfterRemove(parent, null);
                 }
             } else {
                 //至少有一个红色子节点,需要向兄弟节点借元素
@@ -447,7 +453,7 @@ public class HashMap<K, V> implements Map<K, V> {
                 red(sibling);
                 if (parentIsBlack) {
                     //持续下溢
-                    afterRemove(parent, null);
+                    fixAfterRemove(parent, null);
                 }
             } else {
                 //至少有一个红色子节点,需要向兄弟节点借元素
@@ -687,7 +693,7 @@ public class HashMap<K, V> implements Map<K, V> {
     /**
      * 红黑树相关操作
      */
-    private void afterPut(Node<K, V> node) {
+    private void fixAfterPut(Node<K, V> node) {
         Node<K, V> parent = node.parent;
         //如果是root节点，则染黑
         if (parent == null) {
@@ -708,7 +714,7 @@ public class HashMap<K, V> implements Map<K, V> {
             black(parent);
             black(uncle);
             //把祖父节点当做新添加的节点
-            afterPut(red(grand));
+            fixAfterPut(red(grand));
             return;
         }
         //叔父节点不是红色(4种)
@@ -869,4 +875,11 @@ public class HashMap<K, V> implements Map<K, V> {
     protected Node<K, V> createNode(K key, V value, Node<K, V> parent) {
         return new Node<>(key, value, parent);
     }
+
+    /**
+     *
+     * @param willNode  想要删除的节点
+     * @param removedNode 真正被删除的节点
+     */
+    protected void afterRemove(Node<K, V> willNode,Node<K, V> removedNode){};
 }

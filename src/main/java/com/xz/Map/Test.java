@@ -107,7 +107,7 @@ public class Test {
         System.out.println(hashMap.get(subKey1));
     }*/
     static void test1() {
-        String filepath = "D:\\software\\sources\\java\\util";
+        String filepath = "D:\\software\\sources\\java\\util\\concurrent";
         FileInfo fileInfo = Files.read(filepath, null);
         String[] words = fileInfo.words();
 
@@ -118,6 +118,7 @@ public class Test {
         //java.util.HashMap<String, Integer> map=new java.util.HashMap<String, Integer>();
         testMap(new TreeMap<>(),words);
         testMap(new HashMap<>(),words);
+        testMap(new LinkedHashMap<>(),words);
     }
 
     static void test2(HashMap<Object, Integer> map) {
@@ -168,14 +169,16 @@ public class Test {
         for (int i = 1; i <= 3; i++) {
             map.put(new Key(i), i + 5);
         }
-        map.print();
-        System.out.println(map.get("jack"));
-/*        map.traversal(new Map.Visitor<Object, Integer>() {
+        for (int i = 5; i <= 7; i++) {
+            map.remove(new Key(i));
+        }
+        //map.print();
+        map.traversal(new Map.Visitor<Object, Integer>() {
             public boolean visit(Object key, Integer value) {
                 System.out.println(key + "_" + value);
                 return false;
             }
-        });*/
+        });
     }
 
     static void test5(HashMap<Object, Integer> map) {
@@ -234,6 +237,21 @@ public class Test {
         });
     }
 
+    static void test7() {
+        Map<Object, Integer> map=new LinkedHashMap<>();
+        map.put("jack", 1);
+        map.put("rose", 2);
+        map.put("jim", 3);
+        map.put("jake", 4);
+        map.remove("rose");
+        map.traversal(new Map.Visitor<Object, Integer>() {
+            public boolean visit(Object key, Integer value) {
+                System.out.println(key + "_" + value);
+                return false;
+            }
+        });
+    }
+
 
     public static void main(String[] args) {
         //test4(new HashMap<>());
@@ -248,7 +266,9 @@ public class Test {
          *
          * 如果加上扩容,则需要0.135s
          */
-        test6();
+        //test7();
+        //test1();
+        test4(new LinkedHashMap<>());
     }
 
 }
