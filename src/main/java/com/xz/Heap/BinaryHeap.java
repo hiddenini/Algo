@@ -13,13 +13,49 @@ public class BinaryHeap<E> extends AbstractHeap<E> implements BinaryTreeInfo {
     private E[] elements;
     private static final int DEFAULT_CAPACITY = 10;
 
-    public BinaryHeap(Comparator<E> comparator) {
+    public BinaryHeap(E[] elements, Comparator<E> comparator) {
         super(comparator);
-        elements = (E[]) new Object[DEFAULT_CAPACITY];
+        if (elements == null || elements.length == 0) {
+            this.elements = (E[]) new Object[DEFAULT_CAPACITY];
+        } else {
+            /**
+             * 拷贝而不是直接赋值,直接赋值外面的数组发生变化会影响到heap
+             */
+            size=elements.length;
+            int capacity = Math.max(elements.length, DEFAULT_CAPACITY);
+            this.elements = (E[]) new Object[capacity];
+            for (int i = 0; i < elements.length; i++) {
+                this.elements[i] = elements[i];
+            }
+            heapify();
+        }
+    }
+
+    /**
+     * 批量建堆
+     */
+    private void heapify() {
+        //自上而下的上滤,时间复杂度 O(nlogn)
+/*        for (int i = 0; i < size; i++) {
+            siftUp(i);
+        }*/
+
+        //自下而上的下滤,时间复杂度O(n)
+        for (int i = (size >> 1) - 1; i >= 0; i--) {
+            siftDown(i);
+        }
+    }
+
+    public BinaryHeap(E[] elements) {
+        this(elements, null);
+    }
+
+    public BinaryHeap(Comparator<E> comparator) {
+        this(null, comparator);
     }
 
     public BinaryHeap() {
-        this(null);
+        this(null, null);
     }
 
 
