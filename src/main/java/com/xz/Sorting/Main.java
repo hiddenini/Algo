@@ -11,7 +11,8 @@ public class Main {
                 new SelectionSort(),
                 new HeapSort(),
                 new InsertionSort(),
-                new InsertionSort1());
+                new InsertionSort1(),
+                new InsertionSort2());
     }
 
     private static void testSorts(Integer[] array1, Sort... sorts) {
