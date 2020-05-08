@@ -6,8 +6,12 @@ import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
-        Integer[] array1 = Integers.random(10000, 1, 100000);
-        testSorts(array1, new BubbleSort3(), new SelectionSort(), new HeapSort());
+        Integer[] array1 = Integers.random(10000, 1, 20000);
+        testSorts(array1, new BubbleSort3(),
+                new SelectionSort(),
+                new HeapSort(),
+                new InsertionSort(),
+                new InsertionSort1());
     }
 
     private static void testSorts(Integer[] array1, Sort... sorts) {

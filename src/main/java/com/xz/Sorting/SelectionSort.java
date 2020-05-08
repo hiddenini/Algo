@@ -7,7 +7,7 @@ import com.xz.Sorting.tools.Times;
 /**
  * 选择排序每次循环找到最大的那个值和末尾值交换(相比冒泡减少了很多交换)
  */
-public class SelectionSort extends Sort {
+public class SelectionSort<E extends Comparable<E>> extends Sort<E> {
     @Override
     protected void sort() {
         for (int end = array.length - 1; end > 0; end--) {
