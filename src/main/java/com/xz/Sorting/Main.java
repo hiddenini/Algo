@@ -10,9 +10,8 @@ public class Main {
         testSorts(array1, new BubbleSort3(),
                 new SelectionSort(),
                 new HeapSort(),
-                new InsertionSort(),
-                new InsertionSort1(),
-                new InsertionSort2());
+                new InsertionSort2(),
+                new MergeSort());
     }
 
     private static void testSorts(Integer[] array1, Sort... sorts) {
