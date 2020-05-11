@@ -40,12 +40,19 @@ public class MergeSort<E extends Comparable<E>> extends Sort<E> {
         for (int i = li; i < le; i++) {
             leftArray[i] = array[begin + i];
         }
+        /**
+         * 如果左边先结束则直接结束掉,只有左边还未结束才需要做比对，
+         *
+         * 如果右边先结束则将左边的值挪到array
+         */
         //左边还未结束
         while (li < le) {
             //如果右边还未结束  cmp(array[ri], leftArray[li]) < 0保证了稳定性
             if (ri < re && cmp(array[ri], leftArray[li]) < 0) {
+                //如果右边比左边大,则使用右边覆盖掉ai的位置并且ai++,ri++
                 array[ai++] = array[ri++];
             } else {
+                //如果左边比较小则将左边覆盖掉ai的位置,并且ai++,li++  或者说右边先结束了直接将左边的挪动到array
                 array[ai++] = leftArray[li++];
             }
         }
