@@ -28,19 +28,20 @@ public class QuickSort<E extends Comparable<E>> extends Sort<E> {
         E t;
         while (i < j) {
             //从右边开始找到第一个比temp小的数据
-            while (temp.compareTo(array[j]) <= 0 && i < j) {
+            while (cmp(temp,array[j]) <= 0 && i < j) {
                 j--;
             }
             //从左边开始找到第一个比temp大的数据
-            while (temp.compareTo(array[i]) >= 0 && i < j) {
+            while (cmp(temp,array[i]) >= 0 && i < j) {
                 i++;
             }
 
             //找到之后,如果low < high，进行交换
             if (i < j) {
-                t = array[j];
+/*                t = array[j];
                 array[j] = array[i];
-                array[i] = t;
+                array[i] = t;*/
+                swap(i,j);
             }
         }
         //最后将基准为与i和j相等位置的数字交换

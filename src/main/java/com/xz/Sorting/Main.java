@@ -17,7 +17,13 @@ public class Main {
 
     private static void testSorts(Integer[] array1, Sort... sorts) {
         for (Sort sort : sorts) {
-            sort.sort(Integers.copy(array1));
+            Integer[] copy = Integers.copy(array1);
+            sort.sort(copy);
+            //小批量数据可以打印
+/*            for (int i = 0; i < copy.length; i++) {
+                System.out.print(copy[i] + "_");
+            }
+            System.out.println();*/
         }
         Arrays.sort(sorts);
 
