@@ -11,7 +11,8 @@ public class Main {
                 new SelectionSort(),
                 new HeapSort(),
                 new InsertionSort2(),
-                new MergeSort());
+                new MergeSort(),
+                new QuickSort());
     }
 
     private static void testSorts(Integer[] array1, Sort... sorts) {
@@ -23,5 +24,6 @@ public class Main {
         for (Sort sort : sorts) {
             System.out.println(sort);
         }
+
     }
 }
