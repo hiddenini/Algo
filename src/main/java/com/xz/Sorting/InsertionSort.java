@@ -10,7 +10,10 @@ package com.xz.Sorting;
 public class InsertionSort<E extends Comparable<E>> extends Sort<E> {
     @Override
     protected void sort() {
-        for (int begin = 0; begin < array.length; begin++) {
+        /**
+         * 插入排序是从第二张牌开始比较的,所以这个地方直接从1开始
+         */
+        for (int begin = 1; begin < array.length; begin++) {
             int current = begin;
             /**
              * 元素和左边进行比较，如果小于左边的元素则进行交换,并且将current往左移动一个位置继续循环

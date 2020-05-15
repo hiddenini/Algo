@@ -75,6 +75,8 @@ public abstract class Sort<E extends Comparable<E>> implements Comparable<Sort<E
     }
 
     private Boolean isStable() {
+        //希尔排序是按照列排序的,之前的规则不太适合希尔排序,但是希尔排序是不稳定的
+        if (this instanceof ShellSort) return false;
         Student[] students = new Student[20];
         for (int i = 0; i < students.length; i++) {
             students[i] = new Student(i * 10, 10);

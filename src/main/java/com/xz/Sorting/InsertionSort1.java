@@ -3,7 +3,7 @@ package com.xz.Sorting;
 public class InsertionSort1<E extends Comparable<E>> extends Sort<E> {
     @Override
     protected void sort() {
-        for (int begin = 0; begin < array.length; begin++) {
+        for (int begin = 1; begin < array.length; begin++) {
             int current = begin;
             E v = array[current];
             /**

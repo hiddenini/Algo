@@ -3,7 +3,7 @@ package com.xz.Sorting;
 public class InsertionSort2<E extends Comparable<E>> extends Sort<E> {
     @Override
     protected void sort() {
-        for (int begin = 0; begin < array.length; begin++) {
+        for (int begin = 1; begin < array.length; begin++) {
             //找到begin索引对应元素的待插入索引,然后将[insertIndex,begin)范围内的元素往右边挪动一位 ,从较大的索引开始
             insert(begin, search(begin));
         }

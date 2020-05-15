@@ -6,9 +6,11 @@ import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
-        Integer[] array1 = Integers.random(20000, 1, 20000);
+        Integer[] array1 = Integers.random(10000, 1, 20000);
         //Integer[] array1 = Integers.same(50000, 0);
         testSorts(array1,
+                new ShellSort(),
+                new InsertionSort2(),
                 new HeapSort(),
                 new MergeSort(),
                 new QuickSort());
