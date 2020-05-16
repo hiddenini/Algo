@@ -1,4 +1,6 @@
-package com.xz.Sorting;
+package com.xz.Sorting.cmpSort;
+
+import com.xz.Sorting.Sort;
 
 /**
  * 归并排序 时间复杂度 O(NLogN)

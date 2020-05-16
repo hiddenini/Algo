@@ -1,5 +1,6 @@
 package com.xz.Sorting;
 
+import com.xz.Sorting.cmpSort.ShellSort;
 import com.xz.Sorting.entity.Student;
 
 import java.text.DecimalFormat;
@@ -75,6 +76,9 @@ public abstract class Sort<E extends Comparable<E>> implements Comparable<Sort<E
     }
 
     private Boolean isStable() {
+        //计数排序是非比较排序 并且只能针对整数,并且是非稳定的
+        if (this instanceof CountingSort) return false;
+        if (this instanceof CountingSort1) return true;
         //希尔排序是按照列排序的,之前的规则不太适合希尔排序,但是希尔排序是不稳定的
         if (this instanceof ShellSort) return false;
         Student[] students = new Student[20];

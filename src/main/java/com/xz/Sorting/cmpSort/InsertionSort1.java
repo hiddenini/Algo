@@ -1,4 +1,6 @@
-package com.xz.Sorting;
+package com.xz.Sorting.cmpSort;
+
+import com.xz.Sorting.Sort;
 
 public class InsertionSort1<E extends Comparable<E>> extends Sort<E> {
     @Override

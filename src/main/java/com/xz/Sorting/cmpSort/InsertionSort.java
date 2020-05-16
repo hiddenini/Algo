@@ -1,4 +1,6 @@
-package com.xz.Sorting;
+package com.xz.Sorting.cmpSort;
+
+import com.xz.Sorting.Sort;
 
 /**
  * 插入排序   时间复杂度和数组的逆序对的数量成正比

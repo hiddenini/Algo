@@ -1,5 +1,6 @@
-package com.xz.Sorting;
+package com.xz.Sorting.cmpSort;
 
+import com.xz.Sorting.Sort;
 import com.xz.Sorting.tools.Asserts;
 import com.xz.Sorting.tools.Integers;
 

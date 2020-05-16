@@ -1,4 +1,4 @@
-package com.xz.Sorting;
+package com.xz.Sorting.cmpSort;
 
 import com.xz.Utils.Asserts;
 
