@@ -76,8 +76,11 @@ public abstract class Sort<E extends Comparable<E>> implements Comparable<Sort<E
     }
 
     private Boolean isStable() {
+        //基数排序是非比较的排序,是稳定的
+        if (this instanceof RadixSort) return true;
         //计数排序是非比较排序 并且只能针对整数,并且是非稳定的
         if (this instanceof CountingSort) return false;
+        //改进版的计数排序是非比较排序 并且只能针对整数,并且是稳定的
         if (this instanceof CountingSort1) return true;
         //希尔排序是按照列排序的,之前的规则不太适合希尔排序,但是希尔排序是不稳定的
         if (this instanceof ShellSort) return false;

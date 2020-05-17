@@ -18,7 +18,8 @@ public class Main {
                 new QuickSort());*/
         testSorts(array1,
                 new CountingSort(),
-                new CountingSort1());
+                new CountingSort1(),
+                new RadixSort());
     }
 
     private static void testSorts(Integer[] array1, Sort... sorts) {
