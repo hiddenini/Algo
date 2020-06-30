@@ -15,4 +15,9 @@ public interface Graph<V, E> {
 
     void removeEdge(V from, V to);
 
+    void bfs(V begin, VertexVisitor<V> visitor);
+
+    interface VertexVisitor<V> {
+        boolean visit(V v);
+    }
 }

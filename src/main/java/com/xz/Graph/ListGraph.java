@@ -85,6 +85,9 @@ public class ListGraph<V, E> implements Graph<V, E> {
 
     @Override
     public void removeVertex(V v) {
+        Vertex<V, E> remove = vertices.remove(v);
+        if (remove == null) return;
+
         Vertex<V, E> vertex = vertices.get(v);
         Iterator<Edge<V, E>> iterator = vertex.inEdges.iterator();
         /**
@@ -113,8 +116,6 @@ public class ListGraph<V, E> implements Graph<V, E> {
             edges.remove(next);
         }
 
-        Vertex<V, E> remove = vertices.remove(v);
-        if (remove == null) return;
     }
 
     @Override
@@ -137,6 +138,29 @@ public class ListGraph<V, E> implements Graph<V, E> {
             edges.remove(edge);
         }
 
+    }
+
+    /**
+     * 广度优先遍历
+     */
+    @Override
+    public void bfs(V begin, VertexVisitor<V> visitor) {
+        if (visitor == null) return;
+        Vertex<V, E> beginVertex = vertices.get(begin);
+        if (beginVertex == null) return;
+        Set<Vertex<V, E>> visitedVertices = new HashSet<>();
+        Queue<Vertex<V, E>> queue = new LinkedList<>();
+        queue.offer(beginVertex);
+        visitedVertices.add(beginVertex);
+        while (!queue.isEmpty()) {
+            Vertex<V, E> poll = queue.poll();
+            if (visitor.visit(poll.value)) return;
+            poll.outEdges.forEach((edge) -> {
+                if (visitedVertices.contains(edge.to)) return;
+                queue.offer(edge.to);
+                visitedVertices.add(edge.to);
+            });
+        }
     }
 
     private static class Vertex<V, E> {

@@ -13,9 +13,17 @@ public class Main {
         graph.removeEdge("v1", "v0");
         System.out.println("after remove");
         graph.print();*/
-        graph.print();
+/*        graph.print();
         graph.removeVertex("v0");
         System.out.println("after remove");
-        graph.print();
+        graph.print();*/
+
+        graph.bfs("v1", new Graph.VertexVisitor<String>() {
+            @Override
+            public boolean visit(String s) {
+                System.out.println(s);
+                return false;
+            }
+        });
     }
 }
