@@ -85,11 +85,57 @@ public class ListGraph<V, E> implements Graph<V, E> {
 
     @Override
     public void removeVertex(V v) {
+        Vertex<V, E> vertex = vertices.get(v);
+        Iterator<Edge<V, E>> iterator = vertex.inEdges.iterator();
+        /**
+         * 遍历顶点vertex的所有入边
+         */
+        while (iterator.hasNext()) {
+            Edge<V, E> next = iterator.next();
+            //从自己的入边的集合中删除掉
+            iterator.remove();
+            //删除vertex的所有入边的from顶点的出边的集合中的该条边
+            next.from.outEdges.remove(next);
+            //删除全局边集合中的该条边
+            edges.remove(next);
+        }
+        /**
+         * 遍历顶点vertex的所有出边
+         */
+        iterator = vertex.outEdges.iterator();
+        while (iterator.hasNext()) {
+            //从自己的出边的集合中删除掉
+            Edge<V, E> next = iterator.next();
+            iterator.remove();
+            //删除vertex的所有出边的to顶点的入边的集合中的该条边
+            next.to.inEdges.remove(next);
+            //删除全局边集合中的该条边
+            edges.remove(next);
+        }
 
+        Vertex<V, E> remove = vertices.remove(v);
+        if (remove == null) return;
     }
 
     @Override
     public void removeEdge(V from, V to) {
+        Vertex<V, E> fromVertex = vertices.get(from);
+        if (fromVertex == null) return;
+        Vertex<V, E> toVertex = vertices.get(to);
+        if (toVertex == null) return;
+
+        /**
+         * 先从fromVertex顶点的出边的集合中去删除,如果能删除成功,
+         *
+         * 则去toVertex顶点的入边的集合中去删除,
+         *
+         * 再去全局的边的集合中删除
+         */
+        Edge<V, E> edge = new Edge<>(fromVertex, toVertex);
+        if (fromVertex.outEdges.remove(edge)) {
+            toVertex.inEdges.remove(edge);
+            edges.remove(edge);
+        }
 
     }
 

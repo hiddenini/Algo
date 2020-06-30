@@ -9,6 +9,13 @@ public class Main {
         graph.addEdge("v2", "v3", 5);
         graph.addEdge("v3", "v4", 1);
         graph.addEdge("v0", "v4", 6);
+/*        graph.print();
+        graph.removeEdge("v1", "v0");
+        System.out.println("after remove");
+        graph.print();*/
+        graph.print();
+        graph.removeVertex("v0");
+        System.out.println("after remove");
         graph.print();
     }
 }
