@@ -12,11 +12,19 @@ public class BBST<E> extends BST<E> {
         super(comparator);
     }
     /**
-     *       g──┐
-     *          │
-     *          p──┐
-     *             │
-     *             n
+     *    ┌──g──┐
+     *    │     │
+     *    k  ┌──p──┐
+     *       │     │
+     *       m     n
+     *
+     *
+             ┌──P──┐
+             │     │
+          ┌──g──┐  n
+          │     │
+          k     m
+
      */
     protected void rotateLeft(Node<E> grand) {
         Node<E> parent = grand.right;
@@ -27,11 +35,20 @@ public class BBST<E> extends BST<E> {
     }
 
     /**
-     *     ┌──g
-     *     │
-     *   ┌─p
-     *   │
-     *   n
+     *     ┌──g──┐
+     *     │     │
+     *  ┌──p──┐  k
+     *  │     │
+     *  n     m
+
+
+     *     ┌──p──┐
+     *     │     │
+     *     n  ┌──g──┐
+              │     │
+              m     k
+
+     *
      * @param grand
      */
     protected void rotateRight(Node<E> grand) {

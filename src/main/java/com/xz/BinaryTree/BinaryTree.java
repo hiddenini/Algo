@@ -107,15 +107,15 @@ public class BinaryTree<E> implements BinaryTreeInfo {
      */
     public void inOrderTraversal(Visitor<E> visitor) {
         if (visitor == null) return;
-        inOrderTraversal(root,visitor);
+        inOrderTraversal(root, visitor);
     }
 
-    public void inOrderTraversal(Node<E> node,Visitor<E> visitor) {
+    public void inOrderTraversal(Node<E> node, Visitor<E> visitor) {
         if (node == null || visitor.stop) return;
-        inOrderTraversal(node.left,visitor);
+        inOrderTraversal(node.left, visitor);
         if (visitor.stop) return;
         visitor.stop = visitor.visit(node.element);
-        inOrderTraversal(node.right,visitor);
+        inOrderTraversal(node.right, visitor);
     }
 
     /**
@@ -123,13 +123,13 @@ public class BinaryTree<E> implements BinaryTreeInfo {
      */
     public void postOrderTraversal(Visitor<E> visitor) {
         if (visitor == null) return;
-        postOrderTraversal(root,visitor);
+        postOrderTraversal(root, visitor);
     }
 
-    public void postOrderTraversal(Node<E> node,Visitor<E> visitor) {
+    public void postOrderTraversal(Node<E> node, Visitor<E> visitor) {
         if (node == null || visitor.stop) return;
-        postOrderTraversal(node.left,visitor);
-        postOrderTraversal(node.right,visitor);
+        postOrderTraversal(node.left, visitor);
+        postOrderTraversal(node.right, visitor);
         if (visitor.stop) return;
         visitor.stop = visitor.visit(node.element);
     }
@@ -162,8 +162,9 @@ public class BinaryTree<E> implements BinaryTreeInfo {
 
     }
 
-    public static  abstract class Visitor<E> {
+    public static abstract class Visitor<E> {
         boolean stop;
+
         public abstract boolean visit(E element);
     }
 
@@ -304,7 +305,7 @@ public class BinaryTree<E> implements BinaryTreeInfo {
     }
 
     /**
-     * 获取节点的前驱节点
+     * 获取节点的前驱节点        前驱节点:对一棵二叉树进行中序遍历，遍历后的顺序，当前节点的前一个节点为该节点的前驱节点
      *
      * @param node
      * @return
@@ -321,7 +322,9 @@ public class BinaryTree<E> implements BinaryTreeInfo {
             }
             return p;
         }
-
+        /**
+         * 如果节点没有左子树，则向上寻找父节点，直到父节点的右子树等于当前节点，则该父节点就是前驱节点
+         */
         while (node.parent != null && node == node.parent.left) {
             node = node.parent;
         }
@@ -330,7 +333,7 @@ public class BinaryTree<E> implements BinaryTreeInfo {
     }
 
     /**
-     * 获取节点的后继节点
+     * 获取节点的后继节点        后继节点:对一棵二叉树进行中序遍历，遍历后的顺序，当前节点的后一个节点为该节点的后继节点
      *
      * @param node
      * @return
