@@ -163,6 +163,63 @@ public class ListGraph<V, E> implements Graph<V, E> {
         }
     }
 
+    @Override
+    public void dfs(V begin, VertexVisitor<V> visitor) {
+        if (visitor == null) return;
+        Vertex<V, E> beginVertex = vertices.get(begin);
+        if (beginVertex == null) return;
+        Set<Vertex<V, E>> visitedVertices = new HashSet<>();
+        //doDfsRecursive(beginVertex, visitor, visitedVertices);
+        doDfs(beginVertex, visitor, visitedVertices);
+    }
+
+    /**
+     * 递归形式的深度优先搜索  类似二叉树的前序遍历先访问自身，再访问左子树,再访问右子树
+     * <p>
+     * 图是先访问订单,再访问outEdges 中的某条边的edge.to
+     */
+    void doDfsRecursive(Vertex<V, E> beginVertex, VertexVisitor<V> visitor, Set<Vertex<V, E>> visitedVertices) {
+        visitor.visit(beginVertex.value);
+        visitedVertices.add(beginVertex);
+        for (Edge<V, E> outEdge : beginVertex.outEdges) {
+            if (visitedVertices.contains(outEdge.to)) continue;
+            doDfsRecursive(outEdge.to, visitor, visitedVertices);
+        }
+    }
+
+    /**
+     * 非递归形式的深度优先搜索  使用栈实现
+     * <p>
+     * 先访问输入的顶点,将该顶点放入visitedVertices 然后
+     * <p>
+     * 1--入栈
+     * <p>
+     * 2--栈不为空,则出栈
+     * <p>
+     * 3--访问出栈的订单的outEdge中的某一条边,如果这条边的outEdge.to 没有被访问过
+     * <p>
+     * 4--将from入栈 将to入栈
+     * <p>
+     * 5--访问to 并将to放入 visitedVertices
+     */
+    void doDfs(Vertex<V, E> beginVertex, VertexVisitor<V> visitor, Set<Vertex<V, E>> visitedVertices) {
+        Stack<Vertex<V, E>> stack = new Stack<>();
+        stack.push(beginVertex);
+        visitedVertices.add(beginVertex);
+        if (visitor.visit(beginVertex.value)) return;
+        while (!stack.isEmpty()) {
+            Vertex<V, E> pop = stack.pop();
+            for (Edge<V, E> outEdge : pop.outEdges) {
+                if (visitedVertices.contains(outEdge.to)) continue;
+                stack.push(outEdge.from);
+                stack.push(outEdge.to);
+                visitedVertices.add(outEdge.to);
+                if (visitor.visit(outEdge.to.value)) return;
+                break;
+            }
+        }
+    }
+
     private static class Vertex<V, E> {
         V value;
         Set<Edge<V, E>> inEdges = new HashSet<>();

@@ -18,12 +18,22 @@ public class Main {
         System.out.println("after remove");
         graph.print();*/
 
-        graph.bfs("v1", new Graph.VertexVisitor<String>() {
+/*        graph.bfs("v1", new Graph.VertexVisitor<String>() {
             @Override
             public boolean visit(String s) {
                 System.out.println(s);
                 return false;
             }
+        });*/
+
+/*        graph.bfs("v1", (String v) -> {
+            System.out.println(v);
+            return false;
+        });*/
+
+        graph.dfs("v1", (String v) -> {
+            System.out.println(v);
+            return false;
         });
     }
 }
