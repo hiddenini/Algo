@@ -16,14 +16,15 @@ public class BBST<E> extends BST<E> {
      *    │     │
      *    k  ┌──p──┐
      *       │     │
-     *       m     n
-     *
+     *       m     n──┐
+     *                │
+     *                c
      *
              ┌──P──┐
              │     │
-          ┌──g──┐  n
-          │     │
-          k     m
+          ┌──g──┐  n──┐
+          │     │     │
+          k     m     c
 
      */
     protected void rotateLeft(Node<E> grand) {
@@ -35,18 +36,21 @@ public class BBST<E> extends BST<E> {
     }
 
     /**
-     *     ┌──g──┐
-     *     │     │
-     *  ┌──p──┐  k
-     *  │     │
-     *  n     m
+              ┌──g──┐
+              │     │
+           ┌──p──┐  k
+           │     │
+        ┌──n     m
+        │
+        c
+
 
 
      *     ┌──p──┐
      *     │     │
-     *     n  ┌──g──┐
-              │     │
-              m     k
+     *  ┌──n  ┌──g──┐
+        │     │     │
+        c      m     k
 
      *
      * @param grand
