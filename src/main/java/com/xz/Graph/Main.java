@@ -1,5 +1,7 @@
 package com.xz.Graph;
 
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
         ListGraph<String, Integer> graph = new ListGraph<>();
@@ -31,9 +33,12 @@ public class Main {
             return false;
         });*/
 
-        graph.dfs("v1", (String v) -> {
+/*        graph.dfs("v1", (String v) -> {
             System.out.println(v);
             return false;
-        });
+        });*/
+
+        List<String> strings = graph.topologicalSort();
+        System.out.println(strings);
     }
 }

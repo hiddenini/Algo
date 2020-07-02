@@ -173,10 +173,64 @@ public class ListGraph<V, E> implements Graph<V, E> {
         doDfs(beginVertex, visitor, visitedVertices);
     }
 
+
+    /**
+     * 拓扑排序 要求是无向无环连通图
+     * <p>
+     * 将AOV网中的所有活动排成一个序列,使得每个活动的前驱活动都排在该活动的前面
+     * 卡恩算法
+     * <p>
+     * 假设L是存放拓扑排序结果的列表
+     * 1--把所有入度为0的顶点放入L中，然后把这些顶点从图中删掉
+     * 2--重复步骤1，直到找不到入度为0的顶点
+     * 如果此时L中的元素个数和顶点的总数相同，说明拓扑排序完成
+     * 如果此时L中的元素个数少于顶点的总数，说明原图中存在环，无法进行拓扑排序
+     * <p>
+     * 下面的做法和卡恩算法类似，但是没有对节点进行删除，而是用一个map保存了顶点和顶点的入度
+     */
+    @Override
+    public List<V> topologicalSort() {
+        //最终输出的结果
+        List<V> list = new ArrayList<>();
+        //保存入度为0的顶点
+        Queue<Vertex<V, E>> queue = new LinkedList<>();
+        //保存顶点和顶点的入度
+        Map<Vertex<V, E>, Integer> map = new HashMap<>();
+
+        //遍历顶点集合,将所有入度为0的顶点入队
+        vertices.forEach((V v, Vertex<V, E> vertex) -> {
+            int size = vertex.inEdges.size();
+            if (size == 0) {
+                queue.offer(vertex);
+            } else {
+                map.put(vertex, size);
+            }
+        });
+
+        /**
+         * 队列不为空则出队,将出队顶点的value添加到list中,遍历出队顶点的outEdges,
+         *
+         * 拿到每一个edge.to将其入度-1 如果等于0则入队否则将入度再次写入map
+         */
+        while (!queue.isEmpty()) {
+            Vertex<V, E> poll = queue.poll();
+            list.add(poll.value);
+            poll.outEdges.forEach(edge -> {
+                Integer toIn = map.get(edge.to) - 1;
+                if (toIn == 0) {
+                    queue.offer(edge.to);
+                } else {
+                    map.put(edge.to, toIn);
+                }
+            });
+        }
+        return list;
+    }
+
     /**
      * 递归形式的深度优先搜索  类似二叉树的前序遍历先访问自身，再访问左子树,再访问右子树
      * <p>
-     * 图是先访问订单,再访问outEdges 中的某条边的edge.to
+     * 图是先访问顶点,再访问outEdges 中的某条边的edge.to
      */
     void doDfsRecursive(Vertex<V, E> beginVertex, VertexVisitor<V> visitor, Set<Vertex<V, E>> visitedVertices) {
         visitor.visit(beginVertex.value);
