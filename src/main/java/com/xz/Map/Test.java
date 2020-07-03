@@ -116,9 +116,27 @@ public class Test {
         System.out.println("-------------------------------------");
         Map<String, Integer> map = new HashMap<>();
         //java.util.HashMap<String, Integer> map=new java.util.HashMap<String, Integer>();
-        testMap(new TreeMap<>(),words);
-        testMap(new HashMap<>(),words);
-        testMap(new LinkedHashMap<>(),words);
+        testMap(new TreeMap<>(), words);
+        testMap(new HashMap<>(), words);
+        testMap(new LinkedHashMap<>(), words);
+    }
+
+    static void testTreeMap() {
+        TreeMap<String, String> treeMap = new TreeMap<>();
+        treeMap.put("b", "value-b");
+        treeMap.put("f", "value-f");
+        treeMap.put("z", "value-z");
+        treeMap.put("j", "value-j");
+        treeMap.put("c", "value-c");
+        treeMap.put("a", "value-a");
+
+        treeMap.traversal(new Map.Visitor<String, String>() {
+            @Override
+            public boolean visit(String key, String value) {
+                System.out.println("key:" + key + "value:" + value);
+                return false;
+            }
+        });
     }
 
     static void test2(HashMap<Object, Integer> map) {
@@ -191,7 +209,7 @@ public class Test {
         Asserts.test(map.size() == 20);
     }
 
-    static void testMap(Map<Object, Integer> map,String[] words) {
+    static void testMap(Map<Object, Integer> map, String[] words) {
         Times.test(map.getClass().getName(), new Times.Task() {
             @Override
             public void execute() {
@@ -215,7 +233,7 @@ public class Test {
     }
 
     static void test6() {
-        Map<Object, Integer> map=new LinkedHashMap<>();
+        Map<Object, Integer> map = new LinkedHashMap<>();
         map.put("jack", 1);
         map.put("rose", 2);
         map.put("jim", 3);
@@ -238,7 +256,7 @@ public class Test {
     }
 
     static void test7() {
-        Map<Object, Integer> map=new LinkedHashMap<>();
+        Map<Object, Integer> map = new LinkedHashMap<>();
         map.put("jack", 1);
         map.put("rose", 2);
         map.put("jim", 3);
@@ -268,7 +286,8 @@ public class Test {
          */
         //test7();
         //test1();
-        test4(new LinkedHashMap<>());
+        //test4(new LinkedHashMap<>());
+        testTreeMap();
     }
 
 }
