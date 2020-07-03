@@ -2,7 +2,7 @@ package com.xz.Graph;
 
 import java.util.*;
 
-public class ListGraph<V, E> implements Graph<V, E> {
+public class ListGraph<V, E> extends Graph<V, E> {
     /**
      * 存放图的所有顶点
      */
@@ -12,6 +12,21 @@ public class ListGraph<V, E> implements Graph<V, E> {
      * 存放图的所有边
      */
     private Set<Edge<V, E>> edges = new HashSet<>();
+
+    /**
+     * 全局的比较器
+     */
+    private Comparator<Edge<V, E>> edgeComparator = (Edge<V, E> e1, Edge<V, E> e2) -> {
+        return weightManager.compare(e1.weight, e2.weight);
+    };
+
+    public ListGraph() {
+    }
+
+    public ListGraph(WeightManager<E> weightManager) {
+        super(weightManager);
+    }
+
 
     public void print() {
         System.out.println("num of vertex:" + vertices.size());
@@ -227,6 +242,47 @@ public class ListGraph<V, E> implements Graph<V, E> {
         return list;
     }
 
+    @Override
+    public Set<EdgeInfo<V, E>> mst() {
+        return prim();
+    }
+
+    /**
+     * 最小生成树 prim算法
+     * <p>
+     * 切分定理:切分（Cut）:把图中的节点分为两部分，称为一个切分
+     * <p>
+     * 横切边:如果一个边的两个顶点，分别属于切分的两部分，这个边称为横切边
+     * <p>
+     * 切分定理：给定任意切分，横切边中权值最小的边必然属于最小生成树
+     */
+    public Set<EdgeInfo<V, E>> prim() {
+        Iterator<Vertex<V, E>> iterator = vertices.values().iterator();
+        if (!iterator.hasNext()) return null;
+        Vertex<V, E> vertex = iterator.next();
+        //最后返回的set
+        Set<EdgeInfo<V, E>> edgeInfos = new HashSet<>();
+        //已经被添加过的顶点
+        Set<Vertex<V, E>> addedVertices = new HashSet<>();
+        addedVertices.add(vertex);
+        //将拿到的vertex的所有出边放到最小堆中
+        MinHeap<Edge<V, E>> minHeap = new MinHeap<>(vertex.outEdges, edgeComparator);
+        int size = vertices.size();
+        //当addedVertices中的节点数量等于所有节点的时候退出
+        while (!minHeap.isEmpty() && addedVertices.size() < size) {
+            Edge<V, E> edge = minHeap.remove();
+            //如果已经添加过则continue
+            if (addedVertices.contains(edge.to)) continue;
+            //加入到最终的结果集中
+            edgeInfos.add(edge.info());
+            //将该边的to顶点设置为已经添加过
+            addedVertices.add(edge.to);
+            //将新添加的顶点的所有的outEdges加入到最小堆中
+            minHeap.addAll(edge.to.outEdges);
+        }
+        return edgeInfos;
+    }
+
     /**
      * 递归形式的深度优先搜索  类似二叉树的前序遍历先访问自身，再访问左子树,再访问右子树
      * <p>
@@ -331,6 +387,11 @@ public class ListGraph<V, E> implements Graph<V, E> {
             Edge<V, E> edge = (Edge<V, E>) obj;
             return Objects.equals(from, edge.from) && Objects.equals(to, edge.to);
         }
+
+        public EdgeInfo<V, E> info() {
+            return new EdgeInfo<>(from.value, to.value, weight);
+        }
+
 
         @Override
         public String toString() {

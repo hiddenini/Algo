@@ -1,44 +1,76 @@
 package com.xz.Graph;
 
-import java.util.List;
+import java.util.Set;
 
 public class Main {
+
+    static Graph.WeightManager<Double> weightManager = new Graph.WeightManager<Double>() {
+        public int compare(Double w1, Double w2) {
+            return w1.compareTo(w2);
+        }
+
+        public Double add(Double w1, Double w2) {
+            return w1 + w2;
+        }
+
+        @Override
+        public Double zero() {
+            return 0.0;
+        }
+    };
+
+
+
     public static void main(String[] args) {
-        ListGraph<String, Integer> graph = new ListGraph<>();
-        graph.addEdge("v1", "v0", 9);
-        graph.addEdge("v1", "v2", 3);
-        graph.addEdge("v2", "v0", 2);
-        graph.addEdge("v2", "v3", 5);
-        graph.addEdge("v3", "v4", 1);
-        graph.addEdge("v0", "v4", 6);
-/*        graph.print();
-        graph.removeEdge("v1", "v0");
-        System.out.println("after remove");
-        graph.print();*/
-/*        graph.print();
-        graph.removeVertex("v0");
-        System.out.println("after remove");
-        graph.print();*/
+        testMst();
+    }
 
-/*        graph.bfs("v1", new Graph.VertexVisitor<String>() {
-            @Override
-            public boolean visit(String s) {
-                System.out.println(s);
-                return false;
+    static void testMst() {
+        Graph<Object, Double> graph = undirectedGraph(Data.MST_01);
+        Set<Graph.EdgeInfo<Object, Double>> infos = graph.mst();
+        for (Graph.EdgeInfo<Object, Double> info : infos) {
+            System.out.println(info);
+        }
+    }
+
+    /**
+     * 有向图
+     */
+    private static Graph<Object, Double> directedGraph(Object[][] data) {
+        Graph<Object, Double> graph = new ListGraph<>(weightManager);
+        for (Object[] edge : data) {
+            if (edge.length == 1) {
+                graph.addVertex(edge[0]);
+            } else if (edge.length == 2) {
+                graph.addEdge(edge[0], edge[1]);
+            } else if (edge.length == 3) {
+                double weight = Double.parseDouble(edge[2].toString());
+                graph.addEdge(edge[0], edge[1], weight);
             }
-        });*/
+        }
+        return graph;
+    }
 
-/*        graph.bfs("v1", (String v) -> {
-            System.out.println(v);
-            return false;
-        });*/
-
-/*        graph.dfs("v1", (String v) -> {
-            System.out.println(v);
-            return false;
-        });*/
-
-        List<String> strings = graph.topologicalSort();
-        System.out.println(strings);
+    /**
+     * 无向图
+     *
+     * @param data
+     * @return
+     */
+    private static Graph<Object, Double> undirectedGraph(Object[][] data) {
+        Graph<Object, Double> graph = new ListGraph<>(weightManager);
+        for (Object[] edge : data) {
+            if (edge.length == 1) {
+                graph.addVertex(edge[0]);
+            } else if (edge.length == 2) {
+                graph.addEdge(edge[0], edge[1]);
+                graph.addEdge(edge[1], edge[0]);
+            } else if (edge.length == 3) {
+                double weight = Double.parseDouble(edge[2].toString());
+                graph.addEdge(edge[0], edge[1], weight);
+                graph.addEdge(edge[1], edge[0], weight);
+            }
+        }
+        return graph;
     }
 }
