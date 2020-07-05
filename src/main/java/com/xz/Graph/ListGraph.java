@@ -247,6 +247,76 @@ public class ListGraph<V, E> extends Graph<V, E> {
         return kruskal();
     }
 
+    @Override
+    public Map<V, E> shortestPath(V begin) {
+        Vertex<V, E> beginVertex = vertices.get(begin);
+        if (beginVertex == null) return null;
+        /**
+         * 最終返回的map,這裏的元素都是已經被拽起來的石頭
+         */
+        HashMap<V, E> selectPaths = new HashMap<>();
+        /**
+         * 臨時map，存放鬆弛過程中頂點和距離
+         */
+        HashMap<Vertex<V, E>, E> paths = new HashMap<>();
+
+        //初始化paths
+        for (Edge<V, E> outEdge : beginVertex.outEdges) {
+            paths.put(outEdge.to, outEdge.weight);
+        }
+
+        while (!paths.isEmpty()) {
+            Map.Entry<Vertex<V, E>, E> minEntry = getMinPath(paths);
+            Vertex<V, E> minVertex = minEntry.getKey();
+
+            //minEntry離開桌面
+            selectPaths.put(minVertex.value, minEntry.getValue());
+            //從臨時map中刪除該元素
+            paths.remove(minVertex);
+            //對minVertex的outEdges進行鬆弛操作
+            for (Edge<V, E> edge : minVertex.outEdges) {
+                /**
+                 * 如果edge.to已經離開桌面,則不需要進行鬆弛(如果是無向圖則會出現已經被拽起的石頭的邊再次被選擇到進行鬆弛)
+                 *
+                 * 并且需要排除beginVertex
+                 */
+                if (selectPaths.containsKey(edge.to.value) || edge.to.equals(beginVertex)) continue;
+                //新的可選的最短路徑,beginVertex -->edge.from +edge.weight
+                E newWeight = weightManager.add(minEntry.getValue(), edge.weight);
+                //之前的最短路徑 beginVertex -->edge.to  oldWeight可能為空,因爲beginVertex到edge.to之前可能沒有路徑
+                E oldWeight = paths.get(edge.to);
+                if (oldWeight == null || weightManager.compare(newWeight, oldWeight) < 0) {
+                    paths.put(edge.to, newWeight);
+                }
+            }
+        }
+        //如果上面不排除beginVertex,那麽這裏進行remove操作也可以
+        // selectPaths.remove(beginVertex.value);
+        return selectPaths;
+    }
+
+    /**
+     * 鬆弛操作
+     */
+    private void relax() {
+
+    }
+
+    /**
+     * 從paths挑出一個最小的路徑
+     */
+    private Map.Entry<Vertex<V, E>, E> getMinPath(HashMap<Vertex<V, E>, E> paths) {
+        Iterator<Map.Entry<Vertex<V, E>, E>> it = paths.entrySet().iterator();
+        Map.Entry<Vertex<V, E>, E> minEntry = it.next();
+        while (it.hasNext()) {
+            Map.Entry<Vertex<V, E>, E> entry = it.next();
+            if (weightManager.compare(entry.getValue(), minEntry.getValue()) < 0) {
+                minEntry = entry;
+            }
+        }
+        return minEntry;
+    }
+
     /**
      * 最小生成树 prim算法
      * <p>

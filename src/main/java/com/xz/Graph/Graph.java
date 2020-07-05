@@ -1,6 +1,7 @@
 package com.xz.Graph;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public abstract class Graph<V, E> {
@@ -34,6 +35,8 @@ public abstract class Graph<V, E> {
     public abstract List<V> topologicalSort();
 
     public abstract Set<EdgeInfo<V, E>> mst();
+
+    public abstract Map<V,E> shortestPath(V begin);
 
     public interface WeightManager<E> {
         int compare(E w1, E w2);

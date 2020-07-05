@@ -1,5 +1,6 @@
 package com.xz.Graph;
 
+import java.util.Map;
 import java.util.Set;
 
 public class Main {
@@ -20,9 +21,8 @@ public class Main {
     };
 
 
-
     public static void main(String[] args) {
-        testMst();
+        tesSp();
     }
 
     static void testMst() {
@@ -31,6 +31,13 @@ public class Main {
         for (Graph.EdgeInfo<Object, Double> info : infos) {
             System.out.println(info);
         }
+    }
+
+    static void tesSp() {
+        //Graph<Object, Double> graph = directedGraph(Data.SP);
+        Graph<Object, Double> graph = undirectedGraph(Data.SP);
+        Map<Object, Double> sp = graph.shortestPath("A");
+        System.out.println(sp);
     }
 
     /**
