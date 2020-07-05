@@ -244,7 +244,7 @@ public class ListGraph<V, E> extends Graph<V, E> {
 
     @Override
     public Set<EdgeInfo<V, E>> mst() {
-        return prim();
+        return kruskal();
     }
 
     /**
@@ -282,6 +282,43 @@ public class ListGraph<V, E> extends Graph<V, E> {
         }
         return edgeInfos;
     }
+
+    /**
+     * 最小生成树 Kruskal算法
+     *
+     * @return
+     */
+    public Set<EdgeInfo<V, E>> kruskal() {
+        /**
+         * 如果圖沒有2個頂點則直接return
+         */
+        int edgeSize = vertices.size() - 1;
+        if (edgeSize <= 1) return null;
+        Set<EdgeInfo<V, E>> edgeInfos = new HashSet<>();
+        /**
+         * 最小堆,存放邊
+         */
+        MinHeap<Edge<V, E>> minHeap = new MinHeap<>(edges, edgeComparator);
+        UnionFind<Vertex<V, E>> unionFind = new UnionFind<>();
+        /**
+         * 初始化并查集,讓每個頂點成爲一個集合
+         */
+        vertices.forEach((V v, Vertex<V, E> vertex) -> {
+            unionFind.makeSet(vertex);
+        });
+        while (!minHeap.isEmpty() && edgeInfos.size() < edgeSize) {
+            //拿到最小的那條邊
+            Edge<V, E> edge = minHeap.remove();
+            //如果該條邊的from和to本來是屬於一個集合的那麽會構成環，直接continue
+            if (unionFind.isSame(edge.from, edge.to)) continue;
+            //加入結果集
+            edgeInfos.add(edge.info());
+            //將edge.from,和edge.to并入到一個集合
+            unionFind.union(edge.from, edge.to);
+        }
+        return edgeInfos;
+    }
+
 
     /**
      * 递归形式的深度优先搜索  类似二叉树的前序遍历先访问自身，再访问左子树,再访问右子树
