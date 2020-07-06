@@ -4,7 +4,14 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Queue;
 
-@SuppressWarnings({"unchecked","unused"})
+/**
+ * 在调用接口时的加密可以使用到treeMap
+ * 例如
+ * 将业务参数 + bizvane-nonce + bizvane-timestamp + bizvane-access-token + bizvaneappsecret(本地appsecret) 按ascii码排序 组装为原始字符串 rawData
+ * 对rawData Base64 encode, 然后MD5签名,
+ */
+
+@SuppressWarnings({"unchecked", "unused"})
 public class TreeMap<K, V> implements Map<K, V> {
     private static final boolean RED = false;
     private static final boolean BLACK = true;
@@ -81,7 +88,7 @@ public class TreeMap<K, V> implements Map<K, V> {
     @Override
     public V get(K key) {
         Node<K, V> node = node(key);
-        return node!=null?node.value:null;
+        return node != null ? node.value : null;
     }
 
     @Override
@@ -91,7 +98,7 @@ public class TreeMap<K, V> implements Map<K, V> {
 
     @Override
     public boolean containsKey(K key) {
-        return node(key)!=null;
+        return node(key) != null;
     }
 
     @Override
@@ -99,16 +106,16 @@ public class TreeMap<K, V> implements Map<K, V> {
         /**
          *层序遍历
          */
-        if (root== null) return false;
-        Queue<Node<K,V>> queue=new LinkedList<>();
+        if (root == null) return false;
+        Queue<Node<K, V>> queue = new LinkedList<>();
         queue.offer(root);
-        while (!queue.isEmpty()){
+        while (!queue.isEmpty()) {
             Node<K, V> node = queue.poll();
-            if (valEquals(value,node.value)) return true;
-            if (node.left!=null){
+            if (valEquals(value, node.value)) return true;
+            if (node.left != null) {
                 queue.offer(node.left);
             }
-            if (node.right!=null){
+            if (node.right != null) {
                 queue.offer(node.right);
             }
         }
@@ -117,16 +124,16 @@ public class TreeMap<K, V> implements Map<K, V> {
 
     @Override
     public void traversal(Visitor<K, V> visitor) {
-        if (visitor==null) return;
-        traversal(root,visitor);
+        if (visitor == null) return;
+        traversal(root, visitor);
     }
 
-    public void traversal(Node<K,V> node,Visitor<K, V> visitor) {
-        if (node==null || visitor.stop) return;
-        traversal(node.left,visitor);
+    public void traversal(Node<K, V> node, Visitor<K, V> visitor) {
+        if (node == null || visitor.stop) return;
+        traversal(node.left, visitor);
         if (visitor.stop) return;
-        visitor.visit(node.key,node.value);
-        traversal(node.right,visitor);
+        visitor.visit(node.key, node.value);
+        traversal(node.right, visitor);
     }
 
     private static class Node<K, V> {
@@ -371,71 +378,73 @@ public class TreeMap<K, V> implements Map<K, V> {
 
     /**
      * 根据元素找到对应的节点
+     *
      * @param key
      * @return
      */
-    private Node<K, V> node(K key){
-        Node<K, V> node=root;
-        while (node!=null){
-            int cmp=compare(key,node.key);
-            if (cmp==0) return node;
+    private Node<K, V> node(K key) {
+        Node<K, V> node = root;
+        while (node != null) {
+            int cmp = compare(key, node.key);
+            if (cmp == 0) return node;
             //如果该element比当前节点的element要大，则往右边找
-            if (cmp>0){
-                node=node.right;
-            }else{
+            if (cmp > 0) {
+                node = node.right;
+            } else {
                 //cmp<0
-                node=node.left;
+                node = node.left;
             }
         }
         return null;
     }
 
-    private V remove(Node<K, V> node){
-        if (node==null) return null;;
+    private V remove(Node<K, V> node) {
+        if (node == null) return null;
+        ;
         V oldValue = node.value;
         size--;
         //度为2的节点
-        if (node.hasTwoChildren()){
+        if (node.hasTwoChildren()) {
             //找到后继节点
-            Node<K, V>  s=successor(node);
+            Node<K, V> s = successor(node);
             //用后继节点的值覆盖度为2的节点的值
-            node.key=s.key;
-            node.value=s.value;
+            node.key = s.key;
+            node.value = s.value;
             //删除后继节点
-            node=s;
+            node = s;
         }
         //删除node节点(node的度必然是1或者0)
-        Node<K, V> replace=node.left!=null?node.left:node.right;
+        Node<K, V> replace = node.left != null ? node.left : node.right;
 
-        if (replace!=null) {
+        if (replace != null) {
             //node为度为1的节点
             //更改parent
-            replace.parent=node.parent;
+            replace.parent = node.parent;
             //更改parent的left or right的指向
-            if (node.parent==null){
+            if (node.parent == null) {
                 //node是度为1的节点并且是根节点
-                root=replace;
-            }else if(node==node.parent.left){
-                node.parent.left=replace;
-            }else {
-                node.parent.right=replace;
+                root = replace;
+            } else if (node == node.parent.left) {
+                node.parent.left = replace;
+            } else {
+                node.parent.right = replace;
             }
             //删除节点之后的处理,node被删除时node的parent指针还是存在的
-            afterRemove(node,replace);
-        }else if(node.parent==null){
+            afterRemove(node, replace);
+        } else if (node.parent == null) {
             //node为度为0的节点,且为根节点
-            root=null;
+            root = null;
             //删除节点之后的处理
-            afterRemove(node,null);
-        }else{
+            afterRemove(node, null);
+        } else {
             //node为度为0的节点,但不是根节点
-            if (node==node.parent.left){
-                node.parent.left=null;
-            }else{
-                node.parent.right=null;
+            if (node == node.parent.left) {
+                node.parent.left = null;
+            } else {
+                node.parent.right = null;
             }
             //删除节点之后的处理
-            afterRemove(node,null);
+            afterRemove(node, null);
         }
         return oldValue;
     }
@@ -490,10 +499,10 @@ public class TreeMap<K, V> implements Map<K, V> {
                     //先对兄弟进行左旋转(时期演变成后面两种情况)
                     rotateRight(sibling);
                     //重要,需要切换兄弟节点
-                    sibling=parent.right;
+                    sibling = parent.right;
                 }
                 //继承parent的颜色
-                color(sibling,colorOf(parent));
+                color(sibling, colorOf(parent));
                 black(sibling.right);
                 black(parent);
                 rotateLeft(parent);
@@ -525,11 +534,11 @@ public class TreeMap<K, V> implements Map<K, V> {
                     //先对兄弟进行左旋转(时期演变成后面两种情况)
                     rotateLeft(sibling);
                     //重要,需要切换兄弟节点
-                    sibling=parent.left;
+                    sibling = parent.left;
                 }
                 rotateRight(parent);
                 //继承parent的颜色
-                color(sibling,colorOf(parent));
+                color(sibling, colorOf(parent));
                 black(sibling.left);
                 black(parent);
 
@@ -545,12 +554,12 @@ public class TreeMap<K, V> implements Map<K, V> {
      * @param node
      * @return
      */
-    private Node<K, V>  successor(Node<K, V>  node) {
+    private Node<K, V> successor(Node<K, V> node) {
         if (node == null) return null;
         /**
          * 如果节点的右子树不为空，则找到右节点，一直往左，直到为空
          */
-        Node<K, V>  p = node.right;
+        Node<K, V> p = node.right;
         if (p != null) {
             while (p.left != null) {
                 p = p.left;
