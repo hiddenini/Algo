@@ -1,5 +1,6 @@
 package com.xz.Graph;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,7 +23,29 @@ public class Main {
 
 
     public static void main(String[] args) {
-        tesSp();
+        testTopo();
+    }
+
+    static void tesDfs() {
+        Graph<Object, Double> graph = undirectedGraph(Data.DFS_01);
+        graph.dfs(0,(Object v) ->{
+            System.out.println(v);
+            return false;
+        });
+    }
+
+    static void tesBfs() {
+        Graph<Object, Double> graph = undirectedGraph(Data.BFS_01);
+        graph.dfs("A",(Object v) ->{
+            System.out.println(v);
+            return false;
+        });
+    }
+
+    static void testTopo() {
+        Graph<Object, Double> graph = directedGraph(Data.TOPO);
+        List<Object> list = graph.topologicalSort();
+        System.out.println(list);
     }
 
     static void testMst() {
