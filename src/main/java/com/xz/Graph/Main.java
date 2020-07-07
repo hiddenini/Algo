@@ -23,12 +23,12 @@ public class Main {
 
 
     public static void main(String[] args) {
-        testTopo();
+        tesSp();
     }
 
     static void tesDfs() {
         Graph<Object, Double> graph = undirectedGraph(Data.DFS_01);
-        graph.dfs(0,(Object v) ->{
+        graph.dfs(0, (Object v) -> {
             System.out.println(v);
             return false;
         });
@@ -36,7 +36,7 @@ public class Main {
 
     static void tesBfs() {
         Graph<Object, Double> graph = undirectedGraph(Data.BFS_01);
-        graph.dfs("A",(Object v) ->{
+        graph.dfs("A", (Object v) -> {
             System.out.println(v);
             return false;
         });
@@ -56,11 +56,19 @@ public class Main {
         }
     }
 
-    static void tesSp() {
+    static void tesSpOnlyWeight() {
         //Graph<Object, Double> graph = directedGraph(Data.SP);
         Graph<Object, Double> graph = undirectedGraph(Data.SP);
-        Map<Object, Double> sp = graph.shortestPath("A");
+        Map<Object, Double> sp = graph.shortestPathOnlyWeight("A");
         System.out.println(sp);
+    }
+
+    static void tesSp() {
+        Graph<Object, Double> graph = undirectedGraph(Data.SP);
+        Map<Object, Graph.PathInfo<Object, Double>> map = graph.shortestPath("A");
+        map.forEach((Object v, Graph.PathInfo<Object, Double> pathInfo) -> {
+            System.out.println(v + " - " + pathInfo);
+        });
     }
 
     /**
