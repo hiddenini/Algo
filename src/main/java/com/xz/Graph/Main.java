@@ -22,10 +22,6 @@ public class Main {
     };
 
 
-    public static void main(String[] args) {
-        tesSp();
-    }
-
     static void tesDfs() {
         Graph<Object, Double> graph = undirectedGraph(Data.DFS_01);
         graph.dfs(0, (Object v) -> {
@@ -69,6 +65,33 @@ public class Main {
         map.forEach((Object v, Graph.PathInfo<Object, Double> pathInfo) -> {
             System.out.println(v + " - " + pathInfo);
         });
+    }
+
+    /**
+     * 測試帶有負權邊的bell
+     */
+    static void tesSp1() {
+        Graph<Object, Double> graph = directedGraph(Data.NEGATIVE_WEIGHT1);
+        Map<Object, Graph.PathInfo<Object, Double>> map = graph.shortestPath("A");
+        map.forEach((Object v, Graph.PathInfo<Object, Double> pathInfo) -> {
+            System.out.println(v + " - " + pathInfo);
+        });
+    }
+
+    /**
+     * 測試帶有負權環的bell
+     */
+    static void tesSp2() {
+        Graph<Object, Double> graph = directedGraph(Data.NEGATIVE_WEIGHT2);
+        Map<Object, Graph.PathInfo<Object, Double>> map = graph.shortestPath(0);
+        if (map == null) return;
+        map.forEach((Object v, Graph.PathInfo<Object, Double> pathInfo) -> {
+            System.out.println(v + " - " + pathInfo);
+        });
+    }
+
+    public static void main(String[] args) {
+        tesSp2();
     }
 
     /**

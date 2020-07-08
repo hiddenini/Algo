@@ -297,6 +297,11 @@ public class ListGraph<V, E> extends Graph<V, E> {
 
     @Override
     public Map<V, PathInfo<V, E>> shortestPath(V begin) {
+        //return dis(begin);
+        return bellmanFord(begin);
+    }
+
+    public Map<V, PathInfo<V, E>> dis(V begin) {
         Vertex<V, E> beginVertex = vertices.get(begin);
         if (beginVertex == null) return null;
         /**
@@ -332,17 +337,8 @@ public class ListGraph<V, E> extends Graph<V, E> {
                  * 并且需要排除beginVertex
                  */
                 if (selectPaths.containsKey(edge.to.value)) continue;
-                //新的可選的最短路徑,beginVertex -->edge.from +edge.weight
-                E newWeight = weightManager.add(minEntry.getValue().weight, edge.weight);
-                //之前的最短路徑 beginVertex -->edge.to  oldWeight可能為空,因爲beginVertex到edge.to之前可能沒有路徑
-                PathInfo<V, E> oldPath = paths.get(edge.to);
-                if (oldPath == null || weightManager.compare(newWeight, oldPath.weight) < 0) {
-                    PathInfo<V, E> pathInfo = new PathInfo<>();
-                    pathInfo.weight = newWeight;
-                    pathInfo.edgeInfos.addAll(minEntry.getValue().edgeInfos);
-                    pathInfo.edgeInfos.add(edge.info());
-                    paths.put(edge.to, pathInfo);
-                }
+                //進行鬆弛操作
+                relaxForDij(edge, minEntry.getValue(), paths);
             }
         }
         //如果上面不排除beginVertex,那麽這裏進行remove操作也可以,优先选择这个,上面的判断可能每条边都需要判断,去掉判断后只有出边的to为起始顶点的边会重读写入到
@@ -353,8 +349,86 @@ public class ListGraph<V, E> extends Graph<V, E> {
     /**
      * 鬆弛操作
      */
-    private void relax() {
+    private void relaxForDij(Edge<V, E> edge, PathInfo<V, E> fromPath, HashMap<Vertex<V, E>, PathInfo<V, E>> paths) {
+        //新的可選的最短路徑,beginVertex -->edge.from +edge.weight
+        E newWeight = weightManager.add(fromPath.weight, edge.weight);
+        //之前的最短路徑 beginVertex -->edge.to  oldWeight可能為空,因爲beginVertex到edge.to之前可能沒有路徑
+        PathInfo<V, E> oldPath = paths.get(edge.to);
+        if (oldPath != null && weightManager.compare(newWeight, oldPath.weight) >= 0) return;
 
+        if (oldPath == null) {
+            oldPath = new PathInfo<>();
+            paths.put(edge.to, oldPath);
+        } else {
+            oldPath.edgeInfos.clear();
+        }
+
+        oldPath.weight = newWeight;
+        oldPath.edgeInfos.addAll(fromPath.edgeInfos);
+        oldPath.edgeInfos.add(edge.info());
+    }
+
+    public Map<V, PathInfo<V, E>> bellmanFord(V begin) {
+        Vertex<V, E> beginVertex = vertices.get(begin);
+        if (beginVertex == null) return null;
+        Map<V, PathInfo<V, E>> selectedPaths = new HashMap<>();
+        int count = vertices.size() - 1;
+        /**
+         * 初始化selectedPaths,將beginVertex放入map
+         */
+        PathInfo<V, E> beginPath = new PathInfo<>();
+        //begin頂點的weight應設置為'0'，這個0應該是由外界定義,而不是數字0
+        beginPath.weight = weightManager.zero();
+        selectedPaths.put(begin, beginPath);
+        for (int i = 0; i < count; i++) {
+            for (Edge<V, E> edge : edges) {
+                PathInfo<V, E> fromPath = selectedPaths.get(edge.from.value);
+                /**
+                 * 如果選擇到的被鬆弛的edge的from的最短路徑還未確定,則直接continue
+                 */
+                if (fromPath == null) continue;
+                relaxForBell(edge, fromPath, selectedPaths);
+            }
+        }
+
+        /**
+         * 如果進行了V-1次鬆弛后還能鬆弛成功那麽則有負權環
+         */
+        for (Edge<V, E> edge : edges) {
+            PathInfo<V, E> fromPath = selectedPaths.get(edge.from.value);
+            if (fromPath == null) continue;
+            if(relaxForBell(edge, fromPath, selectedPaths)){
+                System.out.println("有負權環");
+                return null;
+            }
+        }
+
+
+        selectedPaths.remove(begin);
+        return selectedPaths;
+    }
+
+    /**
+     * 鬆弛操作
+     */
+    private Boolean relaxForBell(Edge<V, E> edge, PathInfo<V, E> fromPath, Map<V, PathInfo<V, E>> paths) {
+        //新的可選的最短路徑,beginVertex -->edge.from +edge.weight
+        E newWeight = weightManager.add(fromPath.weight, edge.weight);
+        //之前的最短路徑 beginVertex -->edge.to  oldWeight可能為空,因爲beginVertex到edge.to之前可能沒有路徑
+        PathInfo<V, E> oldPath = paths.get(edge.to.value);
+        if (oldPath != null && weightManager.compare(newWeight, oldPath.weight) >= 0) return false;
+
+        if (oldPath == null) {
+            oldPath = new PathInfo<>();
+            paths.put(edge.to.value, oldPath);
+        } else {
+            oldPath.edgeInfos.clear();
+        }
+
+        oldPath.weight = newWeight;
+        oldPath.edgeInfos.addAll(fromPath.edgeInfos);
+        oldPath.edgeInfos.add(edge.info());
+        return true;
     }
 
     /**
