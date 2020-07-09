@@ -39,15 +39,19 @@ public abstract class Graph<V, E> {
     public abstract Set<EdgeInfo<V, E>> mst();
 
     /**
-     *只返回节点间的最短路径的weight
+     * 只返回节点间的最短路径的weight
      */
     public abstract Map<V, E> shortestPathOnlyWeight(V begin);
 
     /**
-     *返回节点间的最短路径的weight和具体的路径
+     * 返回节点间的最短路径的weight和具体的路径
      */
     public abstract Map<V, PathInfo<V, E>> shortestPath(V begin);
 
+    /**
+     * 多源最短路徑
+     */
+    public abstract Map<V, Map<V, PathInfo<V, E>>> shortestPath();
 
     public interface WeightManager<E> {
         int compare(E w1, E w2);

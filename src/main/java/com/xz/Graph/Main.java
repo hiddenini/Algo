@@ -90,8 +90,39 @@ public class Main {
         });
     }
 
+
+    /**
+     * 測試ford
+     */
+    static void tesSp3() {
+        Graph<Object, Double> graph = directedGraph(Data.SP);
+        Map<Object, Map<Object, Graph.PathInfo<Object, Double>>> map = graph.shortestPath();
+        if (map == null) return;
+        map.forEach((Object from, Map<Object, Graph.PathInfo<Object, Double>> pathInfoMap) -> {
+            System.out.println(from + " - ------");
+            pathInfoMap.forEach((Object to, Graph.PathInfo<Object, Double> pathInfo) -> {
+                System.out.println(to + "   " + pathInfo);
+            });
+        });
+    }
+
+    /**
+     * 測試ford 負權邊
+     */
+    static void tesSp4() {
+        Graph<Object, Double> graph = directedGraph(Data.NEGATIVE_WEIGHT1);
+        Map<Object, Map<Object, Graph.PathInfo<Object, Double>>> map = graph.shortestPath();
+        if (map == null) return;
+        map.forEach((Object from, Map<Object, Graph.PathInfo<Object, Double>> pathInfoMap) -> {
+            System.out.println(from + " - ------");
+            pathInfoMap.forEach((Object to, Graph.PathInfo<Object, Double> pathInfo) -> {
+                System.out.println(to + "   " + pathInfo);
+            });
+        });
+    }
+
     public static void main(String[] args) {
-        tesSp2();
+        tesSp4();
     }
 
     /**
