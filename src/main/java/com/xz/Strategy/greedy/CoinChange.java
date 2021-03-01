@@ -14,7 +14,7 @@ public class CoinChange {
         //使用下面的算法时,得到的结果是25,5,5,5,1
         //贪心算法不一定会得到全局最优解，只贪图眼前利益最大化,看不到长远未来,走一步看一步，后面使用动态规划
         coinChange1(new Integer[]{25, 20, 5, 1}, 41);
-
+        //coinChange2(new Integer[]{25, 10, 5, 1}, 41);
 
     }
 
@@ -52,5 +52,19 @@ public class CoinChange {
 
     }
 
+    static void coinChange2(Integer[] faces, int money) {
+        //重大到小排序
+        Arrays.sort(faces);
+        int coins = 0, idx = faces.length - 1;
+        while (idx >= 0) {
+            while (money >= faces[idx]) {
+                money -= faces[idx];
+                coins++;
+            }
+            //当前剩余的money小于faces[idx]时,永久的跳过这个已经硬币
+            idx--;
+        }
 
+
+    }
 }
