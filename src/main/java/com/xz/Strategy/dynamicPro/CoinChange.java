@@ -17,7 +17,8 @@ public class CoinChange {
         //System.out.println(coins(41));
         //System.out.println(coins1(41));
         //System.out.println(coins2(7));
-        System.out.println(coins3(7));
+
+        System.out.println(coins4(41, new int[]{1, 5,20, 25}));
 
     }
 
@@ -138,5 +139,31 @@ public class CoinChange {
             n -= faces[n];
         }
         System.out.println();
+    }
+
+    /**
+     * 通用版本
+     *
+     * @param n
+     * @param faces
+     * @return
+     */
+    static int coins4(int n, int faces[]) {
+        if (n <= 1 || faces == null || faces.length == 0) return -1;
+        int[] dp = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            int min = Integer.MAX_VALUE;
+            //遍历faces数组,生成
+            /**
+             *  if (i >= 1) min = Math.min(dp[i - 1], min);
+             *  if (i >= 5) min = Math.min(dp[i - 5], min);
+             */
+            for (int face : faces) {
+                if (i < face) continue;
+                min = Math.min(dp[i - face], min);
+            }
+            dp[i] = min + 1;
+        }
+        return dp[n];
     }
 }
