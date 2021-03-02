@@ -10,6 +10,20 @@ package com.xz.Strategy.dynamicPro;
  * <p>
  * 假设有25分、20分、5分、1分的硬币，现要找给客户41分的零钱，如何办到硬币个数最少？
  * 此前用贪心策略得到的并非是最优解（贪心得到的解是 5 枚硬币）
+ * <p>
+ * 动态规划中的“动态”可以理解为是“会变化的状态”
+ * ① 定义状态（状态是原问题、子问题的解）
+ * ✓ 比如定义 dp(i) 的含义 例如找零钱中的dp(41) dp(5) 就是找零41或者5需要的硬币个数
+ * ② 设置初始状态（边界）
+ * ✓ 比如设置 dp(0) 的值  初始化dp数组 例如找零钱中的dp[1]=1 dp[5]=1
+ * ③ 确定状态转移方程
+ * ✓ 比如确定 dp(i) 和 dp(i – 1) 的关系 通过dp[1] -->dp[2] -->... 通过小的递推出大的
+ *
+ * 可以用动态规划来解决的问题，通常具备2个特点
+ * 最优子结构（最优化原理）：通过求解子问题的最优解，可以获得原问题的最优解
+ * 无后效性
+ * ✓ 某阶段的状态一旦确定，则此后过程的演变不再受此前各状态及决策的影响（未来与过去无关）
+ * ✓ 在推导后面阶段的状态时，只关心前面阶段的具体状态值，不关心这个状态是怎么一步步推导出来的
  */
 
 public class CoinChange {
@@ -18,7 +32,8 @@ public class CoinChange {
         //System.out.println(coins1(41));
         //System.out.println(coins2(7));
 
-        System.out.println(coins4(41, new int[]{1, 5,20, 25}));
+        System.out.println(coins4(41, new int[]{1, 5, 20, 25}));
+        System.out.println(coins4(6, new int[]{5, 20, 25}));
 
     }
 
@@ -158,11 +173,17 @@ public class CoinChange {
              *  if (i >= 1) min = Math.min(dp[i - 1], min);
              *  if (i >= 5) min = Math.min(dp[i - 5], min);
              */
+            //考虑到无法凑齐,例如 面额为 5 10 25 凑6分钱
+            //或者5 10 25 凑41分钱
             for (int face : faces) {
-                if (i < face) continue;
+                if (i < face || dp[i - face] < 0) continue;
                 min = Math.min(dp[i - face], min);
             }
-            dp[i] = min + 1;
+            if (min == Integer.MAX_VALUE) {
+                dp[i] = -1;
+            } else {
+                dp[i] = min + 1;
+            }
         }
         return dp[n];
     }

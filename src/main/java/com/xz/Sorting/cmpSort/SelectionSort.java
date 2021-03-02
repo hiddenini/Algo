@@ -7,6 +7,10 @@ import com.xz.Sorting.tools.Times;
 
 /**
  * 选择排序每次循环找到最大的那个值和末尾值交换(相比冒泡减少了很多交换)
+ * <p>
+ * 选择排序是不稳定的
+ * <p>
+ * 7 5 10 10 2 4 2
  */
 public class SelectionSort<E extends Comparable<E>> extends Sort<E> {
     @Override
