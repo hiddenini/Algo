@@ -3,6 +3,9 @@ package com.xz.Strategy.dynamicPro;
 public class Lis {
     public static void main(String[] args) {
         System.out.println(lengthOfLis(new int[]{10, 2, 2, 5, 1, 7, 101, 18}));
+        System.out.println(lengthOfLis1(new int[]{10, 2, 2, 5, 1, 7, 101, 18}));
+        System.out.println(lengthOfLis2(new int[]{10, 2, 2, 5, 1, 7, 101, 18}));
+
     }
 
     /**
@@ -42,5 +45,80 @@ public class Lis {
             max = Math.max(dp[i], max);
         }
         return max;
+    }
+
+    /**
+     * 把每个数字看做是一张扑克牌，从左到右按顺序处理每一个扑克牌
+     * 将它压在（从左边数过来）第一个牌顶 ≥ 它的牌堆上面
+     * 如果找不到牌顶 ≥ 它的牌堆，就在最右边新建一个牌堆，将它放入这个新牌堆中
+     * ◼ 当处理完所有牌，最终牌堆的数量就是最长上升子序列的长度
+     * <p>
+     * ◼ 思路（假设数组是 nums，也就是最初的牌数组）
+     * top[i] 是第 i 个牌堆的牌顶，len 是牌堆的数量，初始值为 0 遍历每一张牌 num
+     * ✓ 利用二分搜索找出 num 最终要放入的牌堆位置 index
+     * ✓ num 作为第 index 个牌堆的牌顶，top[index] = num
+     * ✓ 如果 index 等于 len，相当于新建一个牌堆，牌堆数量 +1，也就是 len++
+     *
+     * @param nums
+     * @return
+     */
+    static int lengthOfLis1(int nums[]) {
+        if (nums == null || nums.length == 0) return 0;
+        //牌堆的数量
+        int len = 0;
+        //排顶数组
+        int[] top = new int[nums.length];
+        //遍历所有的牌
+        for (int num : nums) {
+            //遍历所有的牌堆
+            int j = 0;
+            while (j < len) {
+                //找到第一个大于等于num的牌堆
+                if (top[j] >= num) {
+                    top[j] = num;
+                    break;
+                }
+                j++;
+            }
+            if (j == len) {
+                len++;
+                top[j] = num;
+            }
+        }
+        return len;
+    }
+
+    /**
+     * 使用二分搜索优化 牌堆数组是递增的,所以可以使用二分搜索找到插入位置
+     *
+     * @param nums
+     * @return
+     */
+    static int lengthOfLis2(int nums[]) {
+        if (nums == null || nums.length == 0) return 0;
+        //牌堆的数量
+        int len = 0;
+        //排顶数组
+        int[] top = new int[nums.length];
+        //遍历所有的牌
+        for (int num : nums) {
+            int begin = 0;
+            int end = len;
+            while (begin < end) {
+                int mid = (begin + end) >> 1;
+                if (num <= top[mid]) {
+                    end = mid;
+                } else {
+                    //大于等于则往右边找
+                    begin = mid + 1;
+                }
+            }
+            //循环结束时的begin==end 就是该元素的插入位置
+            //覆盖牌顶
+            top[begin] = num;
+            //新建一个牌堆
+            if (begin == len) len++;
+        }
+        return len;
     }
 }

@@ -23,6 +23,7 @@ public class Lcss {
     public static void main(String[] args) {
         System.out.println(lcss("ABCB", "BABC"));
         System.out.println(lcss1("ABCB", "BABC"));
+        System.out.println(lcss2("ABCB", "BABC"));
 
     }
 
@@ -90,6 +91,42 @@ public class Lcss {
                     dp[col] = 0;
                 } else {
                     dp[col] = leftTop + 1;
+                    max = Math.max(dp[col], max);
+                }
+            }
+        }
+        return max;
+    }
+
+    /**
+     * 和0-1背包类似，在使用一维数组时,从后往前算，去掉leftTop
+     *
+     * @param s1
+     * @param s2
+     * @return
+     */
+    static int lcss2(String s1, String s2) {
+        if (s1 == null || s2 == null) return 0;
+        char[] chars1 = s1.toCharArray();
+        if (chars1.length == 0) return 0;
+        char[] chars2 = s2.toCharArray();
+        if (chars2.length == 0) return 0;
+
+        char[] rowhars = chars1, colsChas = chars2;
+        //让较短的数组长度作为列
+        if (chars1.length < chars2.length) {
+            colsChas = chars1;
+            rowhars = chars2;
+        }
+
+        int[] dp = new int[colsChas.length + 1];
+        int max = 0;
+        for (int row = 1; row <= rowhars.length; row++) {
+            for (int col = colsChas.length; col >= 1; col--) {
+                if (chars1[row - 1] != chars2[col - 1]) {
+                    dp[col] = 0;
+                } else {
+                    dp[col] = dp[col - 1] + 1;
                     max = Math.max(dp[col], max);
                 }
             }
