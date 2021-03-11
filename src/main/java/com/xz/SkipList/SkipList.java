@@ -6,7 +6,9 @@ import java.util.Comparator;
  * 跳表
  *
  * @param <K>
- * @param <V>
+ * @param <V> 时间复杂度是 O(logn)
+ *            <p>
+ *            当 p = ¼ 时，每个元素所包含的平均指针数量是 1.33
  */
 public class SkipList<K, V> {
     /**
