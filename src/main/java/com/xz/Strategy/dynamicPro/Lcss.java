@@ -1,8 +1,8 @@
 package com.xz.Strategy.dynamicPro;
 
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
-
 /***
+ * https://leetcode-cn.com/problems/maximum-length-of-repeated-subarray/submissions/
+ *
  *最长公共子串
  *
  *子串是连续的子序列
@@ -46,6 +46,25 @@ public class Lcss {
         for (int i = 1; i <= chars1.length; i++) {
             for (int j = 1; j <= chars2.length; j++) {
                 if (chars1[i - 1] == chars2[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                    max = Math.max(max, dp[i][j]);
+                } else {
+                    //=0 数组初始化时默认就等于0
+                }
+            }
+        }
+        return max;
+    }
+
+
+    public int findLength(int[] A, int[] B) {
+        if (A == null || B == null) return 0;
+        if (A.length == 0 || B.length == 0) return 0;
+        int[][] dp = new int[A.length + 1][B.length + 1];
+        int max = 0;
+        for (int i = 1; i <= A.length; i++) {
+            for (int j = 1; j <= B.length; j++) {
+                if (A[i - 1] == B[j - 1]) {
                     dp[i][j] = dp[i - 1][j - 1] + 1;
                     max = Math.max(max, dp[i][j]);
                 } else {

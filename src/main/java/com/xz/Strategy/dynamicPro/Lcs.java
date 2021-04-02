@@ -1,6 +1,7 @@
 package com.xz.Strategy.dynamicPro;
 
 /**
+ * https://leetcode-cn.com/problems/longest-common-subsequence/
  * 求两个序列的最长公共子序列长度
  * [1, 3, 5, 9, 10] 和 [1, 4, 9, 10] 的最长公共子序列是 [1, 9, 10]，长度为 3
  * <p>
@@ -100,6 +101,25 @@ public class Lcs {
             }
         }
         return dp[nums2.length];
+    }
+
+    public int longestCommonSubsequence(String text1, String text2) {
+        if (text1 == null || text2 == null) return 0;
+        char[] chars1 = text1.toCharArray();
+        char[] chars2 = text2.toCharArray();
+        if (chars1.length == 0) return 0;
+        if (chars2.length == 0) return 0;
+        int[][] dp = new int[chars1.length + 1][chars2.length + 1];
+        for (int i = 1; i <= chars1.length; i++) {
+            for (int j = 1; j <= chars2.length; j++) {
+                if (chars1[i - 1] == chars2[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+        return dp[chars1.length][chars2.length];
     }
 
 }

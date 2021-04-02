@@ -1,5 +1,8 @@
 package com.xz.Strategy.dynamicPro;
 
+/**
+ *https://leetcode-cn.com/problems/maximum-subarray/
+ */
 public class MaxSubArray {
     public static void main(String[] args) {
         int nums[] = new int[]{-2, 1, -3, 4, -1, 2, 1, -5, 4};
