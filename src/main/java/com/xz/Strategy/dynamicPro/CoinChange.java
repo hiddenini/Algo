@@ -18,7 +18,7 @@ package com.xz.Strategy.dynamicPro;
  * ✓ 比如设置 dp(0) 的值  初始化dp数组 例如找零钱中的dp[1]=1 dp[5]=1
  * ③ 确定状态转移方程
  * ✓ 比如确定 dp(i) 和 dp(i – 1) 的关系 通过dp[1] -->dp[2] -->... 通过小的递推出大的
- *
+ * <p>
  * 可以用动态规划来解决的问题，通常具备2个特点
  * 最优子结构（最优化原理）：通过求解子问题的最优解，可以获得原问题的最优解
  * 无后效性
@@ -80,27 +80,6 @@ public class CoinChange {
             int min1 = Math.min(coins1(n - 25, dp), coins1(n - 20, dp));
             int min2 = Math.min(coins1(n - 5, dp), coins1(n - 1, dp));
             dp[n] = Math.min(min1, min2) + 1;
-        }
-        return dp[n];
-    }
-
-
-    /**
-     * 递推（自底向上） 先求小的,推出大的 时间和空间复杂度都为O(n)
-     */
-    static int coins2(int n) {
-        if (n < 1) return -1;
-        //这里的dp数组是每种零钱 1--n 需要找的零钱的个数
-        int[] dp = new int[n + 1];
-        //从小到大遍历,因为就算递归调用也是最后先求出了小的，函数一步一步返回才求出大的
-        for (int i = 1; i <= n; i++) {
-            int min = Integer.MAX_VALUE;
-            //这里也初始化了dp[] 从1开始 i=1时  dp[1]=1 i=5时  dp[5]=1 ...
-            if (i >= 1) min = Math.min(dp[i - 1], min);
-            if (i >= 5) min = Math.min(dp[i - 5], min);
-            if (i >= 20) min = Math.min(dp[i - 20], min);
-            if (i >= 25) min = Math.min(dp[i - 25], min);
-            dp[i] = min + 1;
         }
         return dp[n];
     }
@@ -187,4 +166,51 @@ public class CoinChange {
         }
         return dp[n];
     }
+
+    /**
+     * 递推（自底向上） 先求小的,推出大的 时间和空间复杂度都为O(n)
+     */
+    static int coins2(int n) {
+        if (n < 1) return -1;
+        //这里的dp数组是每种零钱 1--n 需要找的零钱的个数
+        int[] dp = new int[n + 1];
+        //从小到大遍历,因为就算递归调用也是最后先求出了小的，函数一步一步返回才求出大的
+        for (int i = 1; i <= n; i++) {
+            int min = Integer.MAX_VALUE;
+            //这里也初始化了dp[] 从1开始 i=1时  dp[1]=1 i=5时  dp[5]=1 ...
+            if (i >= 1) min = Math.min(dp[i - 1], min);
+            if (i >= 5) min = Math.min(dp[i - 5], min);
+            if (i >= 20) min = Math.min(dp[i - 20], min);
+            if (i >= 25) min = Math.min(dp[i - 25], min);
+            dp[i] = min + 1;
+        }
+        return dp[n];
+    }
+
+    public int coinChange(int[] coins, int amount) {
+        if (amount <= 0) return 0;
+        if (coins == null || coins.length == 0) return -1;
+        int[] dp = new int[amount + 1];
+        for (int i = 1; i <= amount; i++) {
+            int min = Integer.MAX_VALUE;
+            //遍历faces数组,生成
+            /**
+             *  if (i >= 1) min = Math.min(dp[i - 1], min);
+             *  if (i >= 5) min = Math.min(dp[i - 5], min);
+             */
+            //考虑到无法凑齐,例如 面额为 5 10 25 凑6分钱
+            //或者5 10 25 凑41分钱
+            for (int face : coins) {
+                if (i < face || dp[i - face] < 0) continue;
+                min = Math.min(dp[i - face], min);
+            }
+            if (min == Integer.MAX_VALUE) {
+                dp[i] = -1;
+            } else {
+                dp[i] = min + 1;
+            }
+        }
+        return dp[amount];
+    }
+
 }
