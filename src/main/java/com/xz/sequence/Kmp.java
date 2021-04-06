@@ -36,7 +36,7 @@ public class Kmp {
         int i = 0;
         int n = -1;
         int iMax = length - 1;
-        while (i > iMax) {
+        while (i < iMax) {
             if (n < 0 || chars[i] == chars[n]) {
                 next[++i] = ++n;
             } else {
@@ -55,7 +55,7 @@ public class Kmp {
         int i = 0;
         int n = -1;
         int iMax = length - 1;
-        while (i > iMax) {
+        while (i < iMax) {
             if (n < 0 || chars[i] == chars[n]) {
                 ++i;
                 ++n;
